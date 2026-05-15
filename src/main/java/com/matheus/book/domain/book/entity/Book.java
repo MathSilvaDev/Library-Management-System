@@ -8,8 +8,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "book")
@@ -38,7 +38,7 @@ public class Book {
             joinColumns = @JoinColumn(name = "book_id"),
             inverseJoinColumns = @JoinColumn(name = "customer_id")
     )
-    private Set<Customer> customers = new HashSet<>();
+    private List<Customer> customers = new ArrayList<>();
 
 
     public Book(String name, Publisher publisher, int quantity, LocalDate publishedIn){
@@ -50,7 +50,7 @@ public class Book {
 
     public void borrowBook(Customer customer){
         if(!isAvailable()){
-            throw new IllegalStateException("The book has not been available");
+            throw new IllegalStateException("The book isn't available");
         }
         customers.add(customer);
 
