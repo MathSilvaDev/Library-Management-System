@@ -34,12 +34,11 @@ public class PublisherService {
                 .toList();
     }
 
-    public PublisherResponse findByName(String name){
-        Publisher publisher = publisherRepository.findByNameContainingIgnoreCase(name)
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND, "Publisher Not Found"));
-
-        return toResponse(publisher);
+    public List<PublisherResponse> findByName(String name){
+        return publisherRepository.findByNameContainingIgnoreCase(name)
+                .stream()
+                .map(this::toResponse)
+                .toList();
     }
 
     private CreatePublisherResponse toCreateResponse(Publisher publisher){
@@ -59,6 +58,5 @@ public class PublisherService {
                         .toList()
         );
     }
-
 
 }

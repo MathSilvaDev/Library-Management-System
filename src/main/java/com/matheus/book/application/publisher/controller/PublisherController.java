@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/publisher")
+@RequestMapping("/api/publishers")
 @RequiredArgsConstructor
 public class PublisherController {
 
@@ -36,7 +36,7 @@ public class PublisherController {
     }
 
     @GetMapping("/{name}")
-    public ResponseEntity<PublisherResponse> findByName(@PathVariable String name){
+    public ResponseEntity<List<PublisherResponse>> findByName(@PathVariable String name){
         return ResponseEntity.ok(
                 publisherService.findByName(name)
         );
