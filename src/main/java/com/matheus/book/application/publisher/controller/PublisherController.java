@@ -1,7 +1,6 @@
 package com.matheus.book.application.publisher.controller;
 
 import com.matheus.book.application.publisher.dto.request.CreatePublisherRequest;
-import com.matheus.book.application.publisher.dto.response.CreatePublisherResponse;
 import com.matheus.book.application.publisher.dto.response.PublisherResponse;
 import com.matheus.book.application.publisher.service.PublisherService;
 import jakarta.validation.Valid;
@@ -20,7 +19,7 @@ public class PublisherController {
     private final PublisherService publisherService;
 
     @PostMapping
-    public ResponseEntity<CreatePublisherResponse> create(
+    public ResponseEntity<PublisherResponse> create(
             @Valid @RequestBody CreatePublisherRequest request){
 
         return ResponseEntity
@@ -29,16 +28,10 @@ public class PublisherController {
     }
 
     @GetMapping
-    public ResponseEntity<List<PublisherResponse>> findAll(){
-        return ResponseEntity.ok(
-                publisherService.findAll()
-        );
-    }
+    public ResponseEntity<List<PublisherResponse>> find(
+            @RequestParam(required = false) String name){
 
-    @GetMapping("/{name}")
-    public ResponseEntity<List<PublisherResponse>> findByName(@PathVariable String name){
         return ResponseEntity.ok(
-                publisherService.findByName(name)
-        );
+                publisherService.findByName(name));
     }
 }

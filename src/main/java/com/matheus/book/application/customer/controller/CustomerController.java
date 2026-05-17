@@ -1,7 +1,6 @@
 package com.matheus.book.application.customer.controller;
 
 import com.matheus.book.application.customer.dto.request.CreateCustomerRequest;
-import com.matheus.book.application.customer.dto.response.CreateCustomerResponse;
 import com.matheus.book.application.customer.dto.response.CustomerResponse;
 import com.matheus.book.application.customer.service.CustomerService;
 import jakarta.validation.Valid;
@@ -20,7 +19,7 @@ public class CustomerController {
     private final CustomerService customerService;
 
     @PostMapping
-    public ResponseEntity<CreateCustomerResponse> create(
+    public ResponseEntity<CustomerResponse> create(
             @Valid @RequestBody CreateCustomerRequest request){
 
         return ResponseEntity
@@ -29,16 +28,10 @@ public class CustomerController {
     }
 
     @GetMapping
-    public ResponseEntity<List<CustomerResponse>> findAll(){
-        return ResponseEntity.ok(
-                customerService.findAll()
-        );
-    }
+    public ResponseEntity<List<CustomerResponse>> findByName(
+            @RequestParam(required = false) String name){
 
-    @GetMapping("/{name}")
-    public ResponseEntity<List<CustomerResponse>> findByName(@PathVariable String name){
         return ResponseEntity.ok(
-                customerService.findByName(name)
-        );
+                customerService.findByName(name));
     }
 }

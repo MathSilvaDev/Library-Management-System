@@ -30,7 +30,7 @@ public class Book {
 
     private LocalDate publishedIn;
 
-    private int quantity;
+    private Integer quantity;
 
     @ManyToMany
     @JoinTable(
@@ -41,11 +41,11 @@ public class Book {
     private List<Customer> customers = new ArrayList<>();
 
 
-    public Book(String name, Publisher publisher, int quantity, LocalDate publishedIn){
+    public Book(String name, Publisher publisher, LocalDate publishedIn, Integer quantity){
         this.name = name;
         this.publisher = publisher;
-        this.quantity = quantity;
         this.publishedIn = publishedIn;
+        setQuantity(quantity);
     }
 
     public void borrowBook(Customer customer){
@@ -69,5 +69,9 @@ public class Book {
 
     private boolean isAvailable(){
         return quantity > 0;
+    }
+
+    private void setQuantity(Integer quantity){
+        this.quantity = quantity == null ? 0 : quantity;
     }
 }
