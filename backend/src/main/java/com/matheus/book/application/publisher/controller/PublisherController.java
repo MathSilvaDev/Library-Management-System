@@ -34,4 +34,12 @@ public class PublisherController {
         return ResponseEntity.ok(
                 publisherService.findByName(name));
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id){
+
+        publisherService.delete(id);
+
+        return ResponseEntity.noContent().build();
+    }
 }
