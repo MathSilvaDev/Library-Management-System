@@ -89,14 +89,13 @@ public class BookService {
     @Transactional
     public void returnBook(Long bookId, Long customerId){
 
-        Customer customer = customerRepository.findById(customerId)
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND, "Customer not found"));
-
         Book book = bookRepository.findByIdAndCustomers_Id(bookId, customerId)
                 .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND, "Book not found"
+                        HttpStatus.NOT_FOUND, "Book or customer not found"
                 ));
+
+        Customer customer = customerRepository.findById(customerId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
         book.returnBook(customer);
     }
