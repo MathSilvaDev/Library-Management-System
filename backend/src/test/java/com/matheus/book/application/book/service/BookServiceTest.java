@@ -182,11 +182,160 @@ class BookServiceTest {
     @Nested
     class BorrowBook{
 
+        @Test
+        void shouldThrowIfBookNotFound(){
+            Long bookId = 1L;
+            Long customerId = 2L;
+
+            when(bookRepository.findById(bookId))
+                    .thenReturn(Optional.empty());
+
+            assertThrows(ResponseStatusException.class,
+                    () -> bookService.borrowBook(bookId, customerId));
+
+            verify(bookRepository).findById(bookId);
+            verify(customerRepository, never()).findById(customerId);
+        }
+
+        @Test
+        void shouldThrowIfCustomerNotFound(){
+            Long bookId = 1L;
+            Long customerId = 2L;
+
+            Publisher publisher = new Publisher("publisher");
+            Book book = new Book("book", publisher, null, 3);
+
+            when(bookRepository.findById(bookId))
+                    .thenReturn(Optional.of(book));
+
+            when(customerRepository.findById(customerId))
+                    .thenReturn(Optional.empty());
+
+            assertThrows(ResponseStatusException.class,
+                    () -> bookService.borrowBook(bookId, customerId));
+
+            verify(bookRepository).findById(bookId);
+            verify(customerRepository).findById(customerId);
+        }
+
+        @Test
+        void shouldThrowIfBookIsNotAvailable(){
+            Long bookId = 1L;
+            Long customerId = 2L;
+
+            Customer customer = new Customer("customer");
+            Publisher publisher = new Publisher("publisher");
+            Book book = new Book("book", publisher, null, 0);
+
+            when(bookRepository.findById(bookId))
+                    .thenReturn(Optional.of(book));
+
+            when(customerRepository.findById(customerId))
+                    .thenReturn(Optional.of(customer));
+
+            assertThrows(ResponseStatusException.class,
+                    () -> bookService.borrowBook(bookId, customerId));
+
+            verify(bookRepository).findById(bookId);
+            verify(customerRepository).findById(customerId);
+        }
+
+        @Test
+        void shouldBorrowBookSuccessfully(){
+            Long bookId = 1L;
+            Long customerId = 2L;
+
+            Customer customer = new Customer("customer");
+            Publisher publisher = new Publisher("publisher");
+            Book book = new Book("book", publisher, null, 3);
+
+            when(bookRepository.findById(bookId))
+                    .thenReturn(Optional.of(book));
+
+            when(customerRepository.findById(customerId))
+                    .thenReturn(Optional.of(customer));
+
+            bookService.borrowBook(bookId, customerId);
+
+            verify(bookRepository).findById(bookId);
+            verify(customerRepository).findById(customerId);
+        }
     }
 
     @Nested
     class ReturnBook{
 
+        @Test
+        void shouldThrowIfBookNotFound(){
+            Long customerId = 1L;
+
+            when(bookRepository.findByIdAndCustomers_Id(null, customerId))
+                    .thenReturn(Optional.empty());
+
+            assertThrows(ResponseStatusException.class,
+                    () -> bookService.returnBook(null, customerId));
+
+            verify(bookRepository).findByIdAndCustomers_Id(null, customerId);
+        }
+
+        @Test
+        void shouldThrowIfCustomerNotFound(){
+            Long bookId = 1L;
+
+            when(bookRepository.findByIdAndCustomers_Id(bookId, null))
+                    .thenReturn(Optional.empty());
+
+            assertThrows(ResponseStatusException.class,
+                    () -> bookService.returnBook(bookId, null));
+
+            verify(bookRepository).findByIdAndCustomers_Id(bookId, null);
+        }
+
+        @Test
+        void shouldThrowIfCustomerHasNotBorrowedBook(){
+            Long bookId = 1L;
+            Long customerId = 2L;
+
+            Customer customer = new Customer("customer");
+            Publisher publisher = new Publisher("publisher");
+            Book book = new Book("book", publisher, null, 1);
+
+            when(bookRepository.findByIdAndCustomers_Id(bookId, customerId))
+                    .thenReturn(Optional.of(book));
+
+            when(customerRepository.findById(customerId))
+                    .thenReturn(Optional.of(customer));
+
+            assertThrows(ResponseStatusException.class,
+                    () -> bookService.returnBook(bookId, customerId));
+
+            verify(bookRepository).findByIdAndCustomers_Id(bookId, customerId);
+            verify(customerRepository).findById(customerId);
+        }
+
+        @Test
+        void shouldReturnBookSuccessfully(){
+            Long bookId = 1L;
+            Long customerId = 2L;
+
+            Customer customer = new Customer("customer");
+            Publisher publisher = new Publisher("publisher");
+            Book book = new Book("book", publisher, null, 1);
+
+            book.borrowBook(customer);
+
+            when(bookRepository.findByIdAndCustomers_Id(bookId, customerId))
+                    .thenReturn(Optional.of(book));
+
+            when(customerRepository.findById(customerId))
+                    .thenReturn(Optional.of(customer));
+
+
+            bookService.returnBook(bookId, customerId);
+
+            verify(bookRepository).findByIdAndCustomers_Id(bookId, customerId);
+            verify(customerRepository).findById(customerId);
+        }
     }
 
 }

@@ -6,6 +6,8 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -50,7 +52,8 @@ public class Book {
 
     public void borrowBook(Customer customer){
         if(!isAvailable()){
-            throw new IllegalStateException("The book isn't available");
+            throw new ResponseStatusException(
+                    HttpStatus.CONFLICT, "The book isn't available");
         }
         customers.add(customer);
 
@@ -59,7 +62,8 @@ public class Book {
 
     public void returnBook(Customer customer){
         if(!customers.contains(customer)){
-            throw new IllegalStateException("This customer doesn't have this book");
+            throw new ResponseStatusException(
+                    HttpStatus.CONFLICT, "This customer doesn't have this book");
         }
 
         customers.remove(customer);
