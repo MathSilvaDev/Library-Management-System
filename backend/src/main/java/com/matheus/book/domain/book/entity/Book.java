@@ -56,8 +56,6 @@ public class Book {
                     HttpStatus.CONFLICT, "The book isn't available");
         }
         customers.add(customer);
-
-        quantity--;
     }
 
     public void returnBook(Customer customer){
@@ -67,12 +65,10 @@ public class Book {
         }
 
         customers.remove(customer);
-
-        quantity++;
     }
 
     private boolean isAvailable(){
-        return quantity > 0;
+        return quantity > customers.size();
     }
 
     private void setQuantity(Integer quantity){

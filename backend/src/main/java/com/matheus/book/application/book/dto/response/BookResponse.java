@@ -6,6 +6,7 @@ public record BookResponse(
         Long id,
         String name,
         Integer quantity,
+        Integer borrowedQuantity,
         String publisherName,
         LocalDate publishedIn
 ) { }

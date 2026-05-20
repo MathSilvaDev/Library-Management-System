@@ -57,6 +57,15 @@ public class BookService {
                 .toList();
     }
 
+    public BookResponse findById(Long id){
+
+        Book book = bookRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "Book not found"));
+
+        return toResponse(book);
+    }
+
     @Transactional
     public void delete(Long id){
         Book book = bookRepository.findById(id)
@@ -105,6 +114,7 @@ public class BookService {
                 book.getId(),
                 book.getName(),
                 book.getQuantity(),
+                book.getCustomers().size(),
                 book.getPublisher().getName(),
                 book.getPublishedIn()
         );
