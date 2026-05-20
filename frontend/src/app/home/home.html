@@ -1,0 +1,150 @@
+<div class="layout">
+  
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <button class="sidebar-toggle" aria-label="Open menu">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+
+    <button
+      class="menu active"
+      data-create-label="New Book"
+      data-search-placeholder="Search books..."
+    >
+      <span class="menu-icon books-icon" aria-hidden="true"></span>
+      <span>Books</span>
+    </button>
+
+    <button
+      class="menu"
+      data-create-label="New Customer"
+      data-search-placeholder="Search customers..."
+    >
+      <span class="menu-icon customer-icon" aria-hidden="true"></span>
+      <span>Customer</span>
+    </button>
+
+    <button
+      class="menu"
+      data-create-label="New Publisher"
+      data-search-placeholder="Search publishers..."
+    >
+      <span class="menu-icon publisher-icon" aria-hidden="true"></span>
+      <span>Publisher</span>
+    </button>
+  </aside>
+
+  <!-- CONTENT -->
+  <main class="content">
+
+    <!-- SEARCH -->
+    <header class="search-container">
+      <input class="search-input" placeholder="Search books..." aria-label="Search books" />
+
+      <button class="search-btn" aria-label="Search">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="11" cy="11" r="7"></circle>
+          <path d="M16.5 16.5L21 21"></path>
+        </svg>
+      </button>
+
+      <button class="create-btn">
+        <span class="plus-icon" aria-hidden="true"></span>
+        <span class="create-label">New Book</span>
+      </button>
+    </header>
+
+    <!-- SELECTED BOOK -->
+    <section class="selected-book">
+      <div>
+        <span class="publisher">Publisher Name</span>
+
+        <h1>Book Title</h1>
+
+        <p>Selected book information appears here later</p>
+
+        <div class="top-buttons">
+          <button>Borrow</button>
+
+          <button>Return</button>
+        </div>
+      </div>
+
+      <div class="book-icon">&#128216;</div>
+    </section>
+
+    <!-- FILTER -->
+    <section class="filters">
+      <button class="filter active">All</button>
+
+      <button class="filter">Borrowed</button>
+
+      <button class="filter">Available</button>
+    </section>
+
+    <!-- BOOK LIST -->
+    <section class="books">
+      <div class="card">
+        <div class="left">
+          <div class="cover">&#128214;</div>
+
+          <div>
+            <h2>Book 1</h2>
+
+            <span>Publisher Name</span>
+
+            <p class="available">Available</p>
+          </div>
+        </div>
+
+        <div class="right">
+          <button class="edit">Edit</button>
+
+          <button class="delete">Delete</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="left">
+          <div class="cover">&#128213;</div>
+
+          <div>
+            <h2>Book 2</h2>
+
+            <span>Publisher Name</span>
+
+            <p class="borrowed">Unavailable</p>
+          </div>
+        </div>
+
+        <div class="right">
+          <button class="edit">Edit</button>
+
+          <button class="delete">Delete</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="left">
+          <div class="cover">&#128215;</div>
+
+          <div>
+            <h2>Book 3</h2>
+
+            <span>Publisher Name</span>
+
+            <p class="available">Available</p>
+          </div>
+        </div>
+
+        <div class="right">
+          <button class="edit">Edit</button>
+
+          <button class="delete">Delete</button>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
