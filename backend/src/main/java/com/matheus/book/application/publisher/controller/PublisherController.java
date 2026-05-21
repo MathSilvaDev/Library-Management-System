@@ -28,11 +28,11 @@ public class PublisherController {
     }
 
     @GetMapping
-    public ResponseEntity<List<PublisherResponse>> find(
+    public ResponseEntity<List<PublisherResponse>> findAllByName(
             @RequestParam(required = false) String name){
 
         return ResponseEntity.ok(
-                publisherService.findByName(name));
+                publisherService.findAllByName(name));
     }
 
     @DeleteMapping("/{id}")

@@ -26,7 +26,7 @@ public class CustomerService {
         return toResponse(customer);
     }
 
-    public List<CustomerResponse> findByName(String name){
+    public List<CustomerResponse> findAllByName(String name){
 
         List<Customer> customers;
 

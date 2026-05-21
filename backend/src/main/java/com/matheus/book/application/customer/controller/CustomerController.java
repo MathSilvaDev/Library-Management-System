@@ -28,11 +28,11 @@ public class CustomerController {
     }
 
     @GetMapping
-    public ResponseEntity<List<CustomerResponse>> findByName(
+    public ResponseEntity<List<CustomerResponse>> findAllByName(
             @RequestParam(required = false) String name){
 
         return ResponseEntity.ok(
-                customerService.findByName(name));
+                customerService.findAllByName(name));
     }
 
     @DeleteMapping("/{id}")

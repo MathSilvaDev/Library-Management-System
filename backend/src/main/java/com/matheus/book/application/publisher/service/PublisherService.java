@@ -26,7 +26,7 @@ public class PublisherService {
         return toResponse(publisher);
     }
 
-    public List<PublisherResponse> findByName(String name){
+    public List<PublisherResponse> findAllByName(String name){
 
         List<Publisher> publishers;
 

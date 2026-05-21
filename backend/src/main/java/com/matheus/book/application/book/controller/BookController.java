@@ -27,11 +27,11 @@ public class BookController {
     }
 
     @GetMapping
-    public ResponseEntity<List<BookResponse>> findByName(
+    public ResponseEntity<List<BookResponse>> findAllByName(
             @RequestParam(required = false) String name){
 
         return ResponseEntity.ok(
-                bookService.findByName(name));
+                bookService.findAllByName(name));
     }
 
     @GetMapping("/{id}")

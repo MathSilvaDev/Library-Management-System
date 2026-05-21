@@ -66,7 +66,7 @@ class CustomerServiceTest {
                     .thenReturn(List.of(customer));
 
             List<CustomerResponse> response =
-                    customerService.findByName(null);
+                    customerService.findAllByName(null);
 
             assertEquals(1, response.size());
 
@@ -81,7 +81,7 @@ class CustomerServiceTest {
                     .thenReturn(List.of(customer));
 
             List<CustomerResponse> response =
-                    customerService.findByName(name);
+                    customerService.findAllByName(name);
 
             assertEquals(1, response.size());
 

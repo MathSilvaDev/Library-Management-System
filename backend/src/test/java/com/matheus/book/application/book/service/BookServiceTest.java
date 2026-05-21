@@ -100,7 +100,7 @@ class BookServiceTest {
                     .thenReturn(List.of(book));
 
             List<BookResponse> response =
-                    bookService.findByName(null);
+                    bookService.findAllByName(null);
 
             assertEquals(1, response.size());
 
@@ -116,7 +116,7 @@ class BookServiceTest {
                     .thenReturn(List.of(book));
 
             List<BookResponse> response =
-                    bookService.findByName("book");
+                    bookService.findAllByName("book");
 
             assertEquals(1, response.size());
 

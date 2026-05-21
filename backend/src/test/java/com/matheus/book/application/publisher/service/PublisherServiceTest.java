@@ -64,7 +64,7 @@ class PublisherServiceTest {
                     .thenReturn(List.of(publisher));
 
             List<PublisherResponse> response =
-                    publisherService.findByName(null);
+                    publisherService.findAllByName(null);
 
             assertEquals(1, response.size());
 
@@ -79,7 +79,7 @@ class PublisherServiceTest {
                     .thenReturn(List.of(publisher));
 
             List<PublisherResponse> response =
-                    publisherService.findByName(name);
+                    publisherService.findAllByName(name);
 
             assertEquals(1, response.size());
 

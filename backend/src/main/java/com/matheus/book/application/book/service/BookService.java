@@ -42,7 +42,7 @@ public class BookService {
         return toResponse(book);
     }
 
-    public List<BookResponse> findByName(String name){
+    public List<BookResponse> findAllByName(String name){
 
         List<Book> books;
 
