@@ -19,8 +19,7 @@ export class PublisherService {
 
   findAllByName(name: string): Observable<PublisherResponse[]>{
     return this.http.get<PublisherResponse[]>(`${this.API_URL}`, { 
-      params: 
-        {name: name}
+      params:{ name }
     });
   }
 

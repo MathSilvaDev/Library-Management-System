@@ -18,8 +18,7 @@ export class CustomerService {
 
   findAllByName(name: string): Observable<CustomerResponse[]>{
     return this.http.get<CustomerResponse[]>(`${this.API_URL}`, { 
-      params: 
-        {name: name}
+      params: { name }
     });
   }
 
