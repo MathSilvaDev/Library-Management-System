@@ -2,6 +2,7 @@ package com.matheus.book.application.book.service;
 
 import com.matheus.book.application.book.dto.request.CreateBookRequest;
 import com.matheus.book.application.book.dto.response.BookResponse;
+import com.matheus.book.application.book.enums.BookFilter;
 import com.matheus.book.domain.book.entity.Book;
 import com.matheus.book.domain.book.repository.BookRepository;
 import com.matheus.book.domain.customer.entity.Customer;
@@ -96,15 +97,15 @@ class BookServiceTest {
             Publisher publisher = new Publisher("publisher");
             Book book = new Book("book", publisher, null, 1);
 
-            when(bookRepository.findAll())
+            when(bookRepository.findAllByName(null))
                     .thenReturn(List.of(book));
 
             List<BookResponse> response =
-                    bookService.findAllByName(null);
+                    bookService.findAllByName(null, BookFilter.ALL);
 
             assertEquals(1, response.size());
 
-            verify(bookRepository).findAll();
+            verify(bookRepository).findAllByName(null);
         }
 
         @Test
@@ -112,15 +113,15 @@ class BookServiceTest {
             Publisher publisher = new Publisher("publisher");
             Book book = new Book("book", publisher, null, 1);
 
-            when(bookRepository.findByNameContainingIgnoreCase("book"))
+            when(bookRepository.findAllByName("book"))
                     .thenReturn(List.of(book));
 
             List<BookResponse> response =
-                    bookService.findAllByName("book");
+                    bookService.findAllByName("book", BookFilter.ALL);
 
             assertEquals(1, response.size());
 
-            verify(bookRepository).findByNameContainingIgnoreCase("book");
+            verify(bookRepository).findAllByName("book");
 
         }
     }

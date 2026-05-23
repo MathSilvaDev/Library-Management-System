@@ -167,7 +167,7 @@ button {
   margin-bottom: 22px;
 }
 
-.search-container input {
+.search-input {
   flex: 1;
   min-width: 0;
   padding: 14px 16px;
@@ -183,7 +183,7 @@ button {
     box-shadow 0.2s;
 }
 
-.search-container input:focus {
+.search-input:focus {
   border-color: var(--primary);
   box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
 }
@@ -262,7 +262,7 @@ button {
   transform: rotate(90deg);
 }
 
-/* TOp */
+/* TOP */
 .selected-book {
   min-height: 220px;
   padding: 32px;
@@ -306,30 +306,6 @@ button {
   flex: 0 0 auto;
   font-size: clamp(64px, 10vw, 96px);
   opacity: 0.28;
-}
-
-.top-buttons {
-  margin-top: 24px;
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-
-.top-buttons button {
-  padding: 11px 18px;
-  border-radius: 8px;
-  background: #ffffff;
-  color: var(--text);
-  cursor: pointer;
-  font-weight: 700;
-  transition:
-    background 0.2s,
-    transform 0.2s;
-}
-
-.top-buttons button:hover {
-  background: #eef4ff;
-  transform: translateY(-1px);
 }
 
 /* FILTER */
@@ -391,6 +367,7 @@ button {
   justify-content: space-between;
   align-items: center;
   gap: 18px;
+  cursor: pointer;
   border: 1px solid var(--border);
   border-radius: 8px;
   background: var(--panel);
@@ -456,6 +433,7 @@ button {
 .right {
   flex: 0 0 auto;
   display: flex;
+  flex-direction: column;
   gap: 8px;
 }
 
@@ -490,11 +468,13 @@ button {
   background: #8f1d15;
 }
 
-@media (max-width: 760px) {
-  body {
-    overflow: auto;
-  }
+.empty {
+  padding: 24px;
+  color: var(--muted);
+  text-align: center;
+}
 
+@media (max-width: 760px) {
   .layout {
     min-height: 100vh;
   }
@@ -553,6 +533,6 @@ button {
 
   .edit,
   .delete {
-    flex: 1;
+    width: 100%;
   }
 }

@@ -2,6 +2,7 @@ package com.matheus.book.application.customer.service;
 
 import com.matheus.book.application.customer.dto.request.CreateCustomerRequest;
 import com.matheus.book.application.customer.dto.response.CustomerResponse;
+import com.matheus.book.application.customer.enums.CustomerFilter;
 import com.matheus.book.domain.customer.entity.Customer;
 import com.matheus.book.domain.customer.repository.CustomerRepository;
 import lombok.RequiredArgsConstructor;
@@ -26,14 +27,19 @@ public class CustomerService {
         return toResponse(customer);
     }
 
-    public List<CustomerResponse> findAllByName(String name){
+    public List<CustomerResponse> findAllByName(String name, CustomerFilter filter){
 
         List<Customer> customers;
 
-        if(name == null || name.isBlank()){
-            customers = customerRepository.findAll();
-        }else{
-            customers = customerRepository.findByNameContainingIgnoreCase(name);
+        switch (filter){
+            case ALL -> customers = customerRepository.findAllByName(name);
+            case WITH_BORROWED_BOOKS ->
+                    customers = customerRepository.findWithBorrowedBooksByName(name);
+
+            case WITHOUT_BORROWED_BOOKS ->
+                    customers = customerRepository.findWithoutBorrowedBooksByName(name);
+
+            default -> customers = customerRepository.findAll();
         }
 
         return customers.stream()

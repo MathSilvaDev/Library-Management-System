@@ -4,10 +4,13 @@ import { FormsModule } from '@angular/forms';
 import { BookService } from './api/book/service/book.service';
 import { CustomerService } from './api/customer/service/customer.service';
 import { PublisherService } from './api/publisher/service/publisher.service';
-import { BookRequest } from './api/book/dto/book-request';
 import { BookResponse } from './api/book/dto/book-response';
 import { CustomerResponse } from './api/customer/dto/customer-response';
 import { PublisherResponse } from './api/publisher/dto/publisher-response';
+
+type Menu = 'BOOKS' | 'CUSTOMER' | 'PUBLISHER';
+type BookFilter = 'ALL' | 'AVAILABLE' | 'UNAVAILABLE';
+type CustomerPublisherFilter = 'ALL' | 'WITHOUT_BORROWED_BOOKS' | 'WITH_BORROWED_BOOKS';
 
 @Component({
   selector: 'app-home',
@@ -16,6 +19,10 @@ import { PublisherResponse } from './api/publisher/dto/publisher-response';
   styleUrl: './home.scss',
 })
 export class Home {
+
+  selectedBookFilter: BookFilter = 'ALL';
+  selectedCustomerPublisherFilter: CustomerPublisherFilter = 'ALL';
+  selectedMenu: Menu = 'BOOKS';
 
   bookName = '';
   customerName = '';
@@ -35,11 +42,46 @@ export class Home {
     this.findAllBooksByName();
   }
 
+  selectMenu(menu: Menu){
+    this.selectedMenu = menu;
+    this.searchSelectedMenu();
+  }
+
+  searchSelectedMenu(){
+    if(this.selectedMenu === 'BOOKS'){
+      this.findAllBooksByName();
+      return;
+    }
+
+    if(this.selectedMenu === 'CUSTOMER'){
+      this.findAllCustomersByName();
+      return;
+    }
+
+    this.findAllPublishersByName();
+  }
+
+  selectBookFilter(filter: BookFilter){
+    this.selectedBookFilter = filter;
+    this.findAllBooksByName();
+  }
+
+  selectCustomerPublisherFilter(filter: CustomerPublisherFilter){
+    this.selectedCustomerPublisherFilter = filter;
+
+    if(this.selectedMenu === 'CUSTOMER'){
+      this.findAllCustomersByName();
+      return;
+    }
+
+    this.findAllPublishersByName();
+  }
+
   //book
   findAllBooksByName(){
     const bookName = this.bookName.trim();
 
-    this.bookService.findAllByName(bookName).subscribe({
+    this.bookService.findAllByName(bookName, this.selectedBookFilter).subscribe({
       next: (response) => {
         this.books = response;
       },
@@ -71,7 +113,7 @@ export class Home {
   findAllCustomersByName(){
     const customerName = this.customerName.trim();
 
-    this.customerService.findAllByName(customerName).subscribe({
+    this.customerService.findAllByName(customerName, this.selectedCustomerPublisherFilter).subscribe({
       next: (response) => {
         this.customers = response;
       },
@@ -98,7 +140,7 @@ export class Home {
   findAllPublishersByName(){
     const publisherName = this.publisherName.trim();
 
-    this.publisherService.findAllByName(publisherName).subscribe({
+    this.publisherService.findAllByName(publisherName, this.selectedCustomerPublisherFilter).subscribe({
       next: (response) => {
         this.publishers = response;
       },

@@ -1,116 +1,270 @@
 <div class="layout">
-  
-  <!-- SIDEBAR -->
   <aside class="sidebar">
-    <button class="sidebar-toggle" aria-label="Open menu">
+    <button class="sidebar-toggle" type="button" aria-label="Open menu">
       <span></span>
       <span></span>
       <span></span>
     </button>
 
     <button
-      class="menu active"
-      data-create-label="New Book"
-      data-search-placeholder="Search books..."
+      class="menu"
+      type="button"
+      [class.active]="selectedMenu === 'BOOKS'"
+      (click)="selectMenu('BOOKS')"
     >
-      <span class="menu-icon books-icon" aria-hidden="true"></span>
+      <span class="menu-icon books-icon"></span>
       <span>Books</span>
     </button>
 
     <button
       class="menu"
-      data-create-label="New Customer"
-      data-search-placeholder="Search customers..."
+      type="button"
+      [class.active]="selectedMenu === 'CUSTOMER'"
+      (click)="selectMenu('CUSTOMER')"
     >
-      <span class="menu-icon customer-icon" aria-hidden="true"></span>
+      <span class="menu-icon customer-icon"></span>
       <span>Customer</span>
     </button>
 
     <button
       class="menu"
-      data-create-label="New Publisher"
-      data-search-placeholder="Search publishers..."
+      type="button"
+      [class.active]="selectedMenu === 'PUBLISHER'"
+      (click)="selectMenu('PUBLISHER')"
     >
-      <span class="menu-icon publisher-icon" aria-hidden="true"></span>
+      <span class="menu-icon publisher-icon"></span>
       <span>Publisher</span>
     </button>
   </aside>
 
-  <!-- CONTENT -->
   <main class="content">
-
-    <!-- SEARCH -->
     <header class="search-container">
-      <input class="search-input" placeholder="Search books..." aria-label="Search books" />
+      @if (selectedMenu === 'BOOKS') {
+        <input
+          class="search-input"
+          placeholder="Search books..."
+          aria-label="Search books"
+          [(ngModel)]="bookName"
+          (keyup.enter)="searchSelectedMenu()"
+        />
 
-      <button class="search-btn" aria-label="Search">
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <circle cx="11" cy="11" r="7"></circle>
-          <path d="M16.5 16.5L21 21"></path>
-        </svg>
-      </button>
+        <button class="search-btn" type="button" aria-label="Search books" (click)="searchSelectedMenu()">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="11" cy="11" r="7"></circle>
+            <path d="M16.5 16.5L21 21"></path>
+          </svg>
+        </button>
+      } @else if (selectedMenu === 'CUSTOMER') {
+        <input
+          class="search-input"
+          placeholder="Search customers..."
+          aria-label="Search customers"
+          [(ngModel)]="customerName"
+          (keyup.enter)="searchSelectedMenu()"
+        />
 
-      <button class="create-btn">
+        <button
+          class="search-btn"
+          type="button"
+          aria-label="Search customers"
+          (click)="searchSelectedMenu()"
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="11" cy="11" r="7"></circle>
+            <path d="M16.5 16.5L21 21"></path>
+          </svg>
+        </button>
+      } @else {
+        <input
+          class="search-input"
+          placeholder="Search publishers..."
+          aria-label="Search publishers"
+          [(ngModel)]="publisherName"
+          (keyup.enter)="searchSelectedMenu()"
+        />
+
+        <button
+          class="search-btn"
+          type="button"
+          aria-label="Search publishers"
+          (click)="searchSelectedMenu()"
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="11" cy="11" r="7"></circle>
+            <path d="M16.5 16.5L21 21"></path>
+          </svg>
+        </button>
+      }
+
+      <button class="create-btn" type="button">
         <span class="plus-icon" aria-hidden="true"></span>
-        <span class="create-label">New Book</span>
+        <span class="create-label">
+          @if (selectedMenu === 'BOOKS') {
+            New Book
+          } @else if (selectedMenu === 'CUSTOMER') {
+            New Customer
+          } @else {
+            New Publisher
+          }
+        </span>
       </button>
     </header>
 
-    <!-- SELECTED BOOK -->
     <section class="selected-book">
       <div>
-        <span class="publisher">Publisher Name</span>
-
-        <h1>Book Title</h1>
-
-        <p>Selected book information appears here later</p>
-
-        <div class="top-buttons">
-          <button>Borrow</button>
-
-          <button>Return</button>
-        </div>
+        @if (selectedMenu === 'BOOKS') {
+          <span class="publisher">Books</span>
+          <h1>{{ books.length }}</h1>
+          <p>Registered books</p>
+        } @else if (selectedMenu === 'CUSTOMER') {
+          <span class="publisher">Customers</span>
+          <h1>{{ customers.length }}</h1>
+          <p>Registered customers</p>
+        } @else {
+          <span class="publisher">Publishers</span>
+          <h1>{{ publishers.length }}</h1>
+          <p>Registered publishers</p>
+        }
       </div>
 
-      <div class="book-icon">&#128216;</div>
+      <div class="book-icon" aria-hidden="true">
+        @if (selectedMenu === 'BOOKS') {
+          &#128216;
+        } @else if (selectedMenu === 'CUSTOMER') {
+          &#128100;
+        } @else {
+          &#127970;
+        }
+      </div>
     </section>
 
-    <!-- FILTER -->
-    <section class="filters">
-      <button class="filter active">All</button>
+    @if (selectedMenu === 'BOOKS') {
+      <section class="filters" aria-label="Book filters">
+        <button
+          class="filter"
+          type="button"
+          [class.active]="selectedBookFilter === 'ALL'"
+          (click)="selectBookFilter('ALL')"
+        >
+          All
+        </button>
 
-      <button class="filter">Borrowed</button>
+        <button
+          class="filter"
+          type="button"
+          [class.active]="selectedBookFilter === 'AVAILABLE'"
+          (click)="selectBookFilter('AVAILABLE')"
+        >
+          Available
+        </button>
 
-      <button class="filter">Available</button>
-    </section>
+        <button
+          class="filter"
+          type="button"
+          [class.active]="selectedBookFilter === 'UNAVAILABLE'"
+          (click)="selectBookFilter('UNAVAILABLE')"
+        >
+          Unavailable
+        </button>
+      </section>
+    } @else {
+      <section class="filters" aria-label="Borrowed book filters">
+        <button
+          class="filter"
+          type="button"
+          [class.active]="selectedCustomerPublisherFilter === 'ALL'"
+          (click)="selectCustomerPublisherFilter('ALL')"
+        >
+          All
+        </button>
 
-    <!-- BOOK LIST -->
+        <button
+          class="filter"
+          type="button"
+          [class.active]="selectedCustomerPublisherFilter === 'WITH_BORROWED_BOOKS'"
+          (click)="selectCustomerPublisherFilter('WITH_BORROWED_BOOKS')"
+        >
+          With borrowed books
+        </button>
+
+        <button
+          class="filter"
+          type="button"
+          [class.active]="selectedCustomerPublisherFilter === 'WITHOUT_BORROWED_BOOKS'"
+          (click)="selectCustomerPublisherFilter('WITHOUT_BORROWED_BOOKS')"
+        >
+          Without borrowed books
+        </button>
+      </section>
+    }
+
     <section class="books">
-      @for (item of books; track $index) {
-        <div class="card">
-          <div class="left">
-            <div class="cover">&#128214;</div>
+      @if (selectedMenu === 'BOOKS') {
+        @for (item of books; track item.id) {
+          <div class="card">
+            <div class="left">
+              <div class="cover" aria-hidden="true">&#128214;</div>
 
-            <div>
-              <h2> {{item.name}} </h2>
+              <div>
+                <h2>{{ item.name }}</h2>
+                <span>{{ item.publisherName }}</span>
 
-              <span> {{item.publisherName}} </span>
+                @if (availableBook(item.quantity, item.borrowedQuantity)) {
+                  <p class="available">Available</p>
+                } @else {
+                  <p class="borrowed">Unavailable</p>
+                }
+              </div>
+            </div>
 
-              @if(this.availableBook(item.quantity, item.borrowedQuantity)){
-                <p class="available"> Available </p>
-              }@else{
-                <p class="borrowed"> Unavailable </p>
-              }
-              
+            <div class="right">
+              <button class="edit" type="button">Edit</button>
+              <button class="delete" type="button" (click)="deleteBook(item.id)">Delete</button>
             </div>
           </div>
+        } @empty {
+          <p class="empty">No books found.</p>
+        }
+      } @else if (selectedMenu === 'CUSTOMER') {
+        @for (item of customers; track item.id) {
+          <div class="card">
+            <div class="left">
+              <div class="cover" aria-hidden="true">&#128100;</div>
 
-          <div class="right">
-            <button class="edit">Edit</button>
+              <div>
+                <h2>{{ item.name }}</h2>
+                <span>Customer</span>
+              </div>
+            </div>
 
-            <button class="delete" (click)="deleteBook(item.id)">Delete</button>
+            <div class="right">
+              <button class="edit" type="button">Edit</button>
+              <button class="delete" type="button" (click)="deleteCustomer(item.id)">Delete</button>
+            </div>
           </div>
-        </div>
+        } @empty {
+          <p class="empty">No customers found.</p>
+        }
+      } @else {
+        @for (item of publishers; track item.id) {
+          <div class="card">
+            <div class="left">
+              <div class="cover" aria-hidden="true">&#127970;</div>
+
+              <div>
+                <h2>{{ item.name }}</h2>
+                <span>Publisher</span>
+              </div>
+            </div>
+
+            <div class="right">
+              <button class="edit" type="button">Edit</button>
+              <button class="delete" type="button" (click)="deletePublisher(item.id)">Delete</button>
+            </div>
+          </div>
+        } @empty {
+          <p class="empty">No publishers found.</p>
+        }
       }
     </section>
   </main>

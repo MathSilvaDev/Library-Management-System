@@ -16,9 +16,9 @@ export class CustomerService {
     return this.http.post<CustomerResponse>(`${this.API_URL}`, {...request});
   }
 
-  findAllByName(name: string): Observable<CustomerResponse[]>{
+  findAllByName(name: string, filter: string): Observable<CustomerResponse[]>{
     return this.http.get<CustomerResponse[]>(`${this.API_URL}`, { 
-      params: { name }
+      params: { name, filter}
     });
   }
 

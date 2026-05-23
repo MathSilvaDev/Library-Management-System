@@ -17,9 +17,9 @@ export class PublisherService {
     return this.http.post<PublisherResponse>(`${this.API_URL}`, {...request});
   }
 
-  findAllByName(name: string): Observable<PublisherResponse[]>{
+  findAllByName(name: string, filter: string): Observable<PublisherResponse[]>{
     return this.http.get<PublisherResponse[]>(`${this.API_URL}`, { 
-      params:{ name }
+      params:{ name, filter }
     });
   }
 

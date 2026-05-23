@@ -17,9 +17,9 @@ export class BookService {
     return this.http.post<BookResponse>(`${this.API_URL}/${publisherId}`, {...request});
   }
 
-  findAllByName(name: string): Observable<BookResponse[]>{
+  findAllByName(name: string, filter: string): Observable<BookResponse[]>{
     return this.http.get<BookResponse[]>(`${this.API_URL}`, { 
-      params: { name }
+      params: { name, filter }
     });
   }
 

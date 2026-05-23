@@ -2,6 +2,7 @@ package com.matheus.book.application.publisher.service;
 
 import com.matheus.book.application.publisher.dto.request.CreatePublisherRequest;
 import com.matheus.book.application.publisher.dto.response.PublisherResponse;
+import com.matheus.book.application.publisher.enums.PublisherFilter;
 import com.matheus.book.domain.book.entity.Book;
 import com.matheus.book.domain.publisher.entity.Publisher;
 import com.matheus.book.domain.publisher.repository.PublisherRepository;
@@ -60,30 +61,30 @@ class PublisherServiceTest {
         void shouldFindAllIfNameIsNull(){
             Publisher publisher = new Publisher(name);
 
-            when(publisherRepository.findAll())
+            when(publisherRepository.findAllByName(null))
                     .thenReturn(List.of(publisher));
 
             List<PublisherResponse> response =
-                    publisherService.findAllByName(null);
+                    publisherService.findAllByName(null, PublisherFilter.ALL);
 
             assertEquals(1, response.size());
 
-            verify(publisherRepository).findAll();
+            verify(publisherRepository).findAllByName(null);
         }
 
         @Test
         void shouldFilterByNameIfNameExists(){
             Publisher publisher = new Publisher(name);
 
-            when(publisherRepository.findByNameContainingIgnoreCase(name))
+            when(publisherRepository.findAllByName(name))
                     .thenReturn(List.of(publisher));
 
             List<PublisherResponse> response =
-                    publisherService.findAllByName(name);
+                    publisherService.findAllByName(name, PublisherFilter.ALL);
 
             assertEquals(1, response.size());
 
-            verify(publisherRepository).findByNameContainingIgnoreCase(name);
+            verify(publisherRepository).findAllByName(name);
 
         }
     }

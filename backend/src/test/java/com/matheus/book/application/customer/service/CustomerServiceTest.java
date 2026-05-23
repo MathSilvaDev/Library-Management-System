@@ -2,6 +2,7 @@ package com.matheus.book.application.customer.service;
 
 import com.matheus.book.application.customer.dto.request.CreateCustomerRequest;
 import com.matheus.book.application.customer.dto.response.CustomerResponse;
+import com.matheus.book.application.customer.enums.CustomerFilter;
 import com.matheus.book.domain.book.entity.Book;
 import com.matheus.book.domain.customer.entity.Customer;
 import com.matheus.book.domain.customer.repository.CustomerRepository;
@@ -62,30 +63,30 @@ class CustomerServiceTest {
         void shouldFindAllIfNameIsNull(){
             Customer customer = new Customer(name);
 
-            when(customerRepository.findAll())
+            when(customerRepository.findAllByName(null))
                     .thenReturn(List.of(customer));
 
             List<CustomerResponse> response =
-                    customerService.findAllByName(null);
+                    customerService.findAllByName(null, CustomerFilter.ALL);
 
             assertEquals(1, response.size());
 
-            verify(customerRepository).findAll();
+            verify(customerRepository).findAllByName(null);
         }
 
         @Test
         void shouldFilterByNameIfNameExists(){
             Customer customer = new Customer(name);
 
-            when(customerRepository.findByNameContainingIgnoreCase(name))
+            when(customerRepository.findAllByName(name))
                     .thenReturn(List.of(customer));
 
             List<CustomerResponse> response =
-                    customerService.findAllByName(name);
+                    customerService.findAllByName(name, CustomerFilter.ALL);
 
             assertEquals(1, response.size());
 
-            verify(customerRepository).findByNameContainingIgnoreCase(name);
+            verify(customerRepository).findAllByName(name);
 
         }
     }

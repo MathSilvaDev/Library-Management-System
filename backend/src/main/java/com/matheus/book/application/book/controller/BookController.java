@@ -2,6 +2,7 @@ package com.matheus.book.application.book.controller;
 
 import com.matheus.book.application.book.dto.request.CreateBookRequest;
 import com.matheus.book.application.book.dto.response.BookResponse;
+import com.matheus.book.application.book.enums.BookFilter;
 import com.matheus.book.application.book.service.BookService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -28,10 +29,11 @@ public class BookController {
 
     @GetMapping
     public ResponseEntity<List<BookResponse>> findAllByName(
-            @RequestParam(required = false) String name){
+            @RequestParam(required = false) String name,
+            @RequestParam BookFilter filter){
 
         return ResponseEntity.ok(
-                bookService.findAllByName(name));
+                bookService.findAllByName(name, filter));
     }
 
     @GetMapping("/{id}")

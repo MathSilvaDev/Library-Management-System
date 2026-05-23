@@ -2,6 +2,8 @@ package com.matheus.book.domain.book.repository;
 
 import com.matheus.book.domain.book.entity.Book;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -10,9 +12,33 @@ import java.util.Optional;
 @Repository
 public interface BookRepository extends JpaRepository<Book, Long> {
 
-    List<Book> findByNameContainingIgnoreCase(String name);
-
     Optional<Book> findByIdAndCustomers_Id(Long id, Long customerId);
+
+    @Query("""
+        SELECT b FROM Book b
+        WHERE (:name IS NULL
+            OR :name = ''
+            OR LOWER(b.name) LIKE LOWER(CONCAT('%', :name, '%')))
+    """)
+    List<Book> findAllByName(String name);
+
+    @Query("""
+        SELECT b FROM Book b
+        WHERE (:name IS NULL
+            OR :name = ''
+            OR LOWER(b.name) LIKE LOWER(CONCAT('%', :name, '%')))
+        AND b.quantity > SIZE(b.customers)
+    """)
+    List<Book> findAvailableByName(String name);
+
+    @Query("""
+        SELECT b FROM Book b
+        WHERE (:name IS NULL
+            OR :name = ''
+            OR LOWER(b.name) LIKE LOWER(CONCAT('%', :name, '%')))
+        AND b.quantity <= SIZE(b.customers)
+    """)
+    List<Book> findUnavailableByName(String name);
 
 
 }

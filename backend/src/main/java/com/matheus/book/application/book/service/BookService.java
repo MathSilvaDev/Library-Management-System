@@ -2,6 +2,7 @@ package com.matheus.book.application.book.service;
 
 import com.matheus.book.application.book.dto.request.CreateBookRequest;
 import com.matheus.book.application.book.dto.response.BookResponse;
+import com.matheus.book.application.book.enums.BookFilter;
 import com.matheus.book.domain.book.entity.Book;
 import com.matheus.book.domain.book.repository.BookRepository;
 import com.matheus.book.domain.customer.entity.Customer;
@@ -42,14 +43,16 @@ public class BookService {
         return toResponse(book);
     }
 
-    public List<BookResponse> findAllByName(String name){
+    public List<BookResponse> findAllByName(String name, BookFilter filter){
 
         List<Book> books;
 
-        if(name == null || name.isBlank()){
-            books = bookRepository.findAll();
-        }else{
-            books = bookRepository.findByNameContainingIgnoreCase(name);
+        switch (filter){
+            case ALL -> books = bookRepository.findAllByName(name);
+            case AVAILABLE -> books = bookRepository.findAvailableByName(name);
+            case UNAVAILABLE -> books = bookRepository.findUnavailableByName(name);
+            default -> books = bookRepository.findAll();
+
         }
 
         return books.stream()

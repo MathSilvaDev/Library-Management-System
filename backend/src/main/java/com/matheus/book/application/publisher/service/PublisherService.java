@@ -2,6 +2,7 @@ package com.matheus.book.application.publisher.service;
 
 import com.matheus.book.application.publisher.dto.request.CreatePublisherRequest;
 import com.matheus.book.application.publisher.dto.response.PublisherResponse;
+import com.matheus.book.application.publisher.enums.PublisherFilter;
 import com.matheus.book.domain.publisher.entity.Publisher;
 import com.matheus.book.domain.publisher.repository.PublisherRepository;
 import lombok.RequiredArgsConstructor;
@@ -26,14 +27,19 @@ public class PublisherService {
         return toResponse(publisher);
     }
 
-    public List<PublisherResponse> findAllByName(String name){
+    public List<PublisherResponse> findAllByName(String name, PublisherFilter filter){
 
         List<Publisher> publishers;
 
-        if(name == null || name.isBlank()){
-            publishers = publisherRepository.findAll();
-        }else{
-            publishers = publisherRepository.findByNameContainingIgnoreCase(name);
+        switch (filter){
+            case ALL -> publishers = publisherRepository.findAllByName(name);
+            case WITH_BORROWED_BOOKS ->
+                    publishers = publisherRepository.findWithBorrowedBooksByName(name);
+
+            case WITHOUT_BORROWED_BOOKS ->
+                    publishers = publisherRepository.findWithoutBorrowedBooksByName(name);
+
+            default -> publishers = publisherRepository.findAll();
         }
 
         return publishers.stream()

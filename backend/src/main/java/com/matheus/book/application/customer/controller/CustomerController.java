@@ -2,6 +2,7 @@ package com.matheus.book.application.customer.controller;
 
 import com.matheus.book.application.customer.dto.request.CreateCustomerRequest;
 import com.matheus.book.application.customer.dto.response.CustomerResponse;
+import com.matheus.book.application.customer.enums.CustomerFilter;
 import com.matheus.book.application.customer.service.CustomerService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -29,10 +30,11 @@ public class CustomerController {
 
     @GetMapping
     public ResponseEntity<List<CustomerResponse>> findAllByName(
-            @RequestParam(required = false) String name){
+            @RequestParam(required = false) String name,
+            @RequestParam CustomerFilter filter){
 
         return ResponseEntity.ok(
-                customerService.findAllByName(name));
+                customerService.findAllByName(name, filter));
     }
 
     @DeleteMapping("/{id}")

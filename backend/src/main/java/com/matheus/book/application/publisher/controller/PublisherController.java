@@ -2,6 +2,7 @@ package com.matheus.book.application.publisher.controller;
 
 import com.matheus.book.application.publisher.dto.request.CreatePublisherRequest;
 import com.matheus.book.application.publisher.dto.response.PublisherResponse;
+import com.matheus.book.application.publisher.enums.PublisherFilter;
 import com.matheus.book.application.publisher.service.PublisherService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -29,10 +30,11 @@ public class PublisherController {
 
     @GetMapping
     public ResponseEntity<List<PublisherResponse>> findAllByName(
-            @RequestParam(required = false) String name){
+            @RequestParam(required = false) String name,
+            @RequestParam PublisherFilter filter){
 
         return ResponseEntity.ok(
-                publisherService.findAllByName(name));
+                publisherService.findAllByName(name, filter));
     }
 
     @DeleteMapping("/{id}")
