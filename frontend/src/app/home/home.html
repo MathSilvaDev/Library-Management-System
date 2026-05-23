@@ -86,65 +86,32 @@
 
     <!-- BOOK LIST -->
     <section class="books">
-      <div class="card">
-        <div class="left">
-          <div class="cover">&#128214;</div>
+      @for (item of books; track $index) {
+        <div class="card">
+          <div class="left">
+            <div class="cover">&#128214;</div>
 
-          <div>
-            <h2>Book 1</h2>
+            <div>
+              <h2> {{item.name}} </h2>
 
-            <span>Publisher Name</span>
+              <span> {{item.publisherName}} </span>
 
-            <p class="available">Available</p>
+              @if(this.availableBook(item.quantity, item.borrowedQuantity)){
+                <p class="available"> Available </p>
+              }@else{
+                <p class="borrowed"> Unavailable </p>
+              }
+              
+            </div>
+          </div>
+
+          <div class="right">
+            <button class="edit">Edit</button>
+
+            <button class="delete" (click)="deleteBook(item.id)">Delete</button>
           </div>
         </div>
-
-        <div class="right">
-          <button class="edit">Edit</button>
-
-          <button class="delete">Delete</button>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="left">
-          <div class="cover">&#128213;</div>
-
-          <div>
-            <h2>Book 2</h2>
-
-            <span>Publisher Name</span>
-
-            <p class="borrowed">Unavailable</p>
-          </div>
-        </div>
-
-        <div class="right">
-          <button class="edit">Edit</button>
-
-          <button class="delete">Delete</button>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="left">
-          <div class="cover">&#128215;</div>
-
-          <div>
-            <h2>Book 3</h2>
-
-            <span>Publisher Name</span>
-
-            <p class="available">Available</p>
-          </div>
-        </div>
-
-        <div class="right">
-          <button class="edit">Edit</button>
-
-          <button class="delete">Delete</button>
-        </div>
-      </div>
+      }
     </section>
   </main>
 </div>

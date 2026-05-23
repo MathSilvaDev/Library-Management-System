@@ -20,9 +20,6 @@ export class Home {
   bookName = '';
   customerName = '';
   publisherName = '';
-  // bookName: string = '';
-  // bookQuantity: number = 0;
-  // publishedIn: Date | null = null;
 
   books: BookResponse[] = [];
   customers: CustomerResponse[] = [];
@@ -35,31 +32,11 @@ export class Home {
   ){}
 
   ngOnInit(){
-    this.findAllBookByName();
+    this.findAllBooksByName();
   }
 
-  // createBook(publisherId: number){
-  //   const bookName = this.bookName.trim();
-  //   const bookQuantity = this.bookQuantity;
-  //   const publishedIn = new Date(publisherId);
-
-  //   const bookRequest: BookRequest = {
-  //     name: bookName, 
-  //     quantity: bookQuantity, 
-  //     publishedIn
-  //   }
-
-  //   this.bookService.create(publisherId, bookRequest).subscribe({
-  //     next: (response) => {
-  //       this.books.push(response);
-  //     },
-  //     error: (err) => {
-  //       console.log("error to createBook");
-  //     }
-  //   });
-  // }
-
-  findAllBookByName(){
+  //book
+  findAllBooksByName(){
     const bookName = this.bookName.trim();
 
     this.bookService.findAllByName(bookName).subscribe({
@@ -72,7 +49,26 @@ export class Home {
     });
   }
 
-  findAllCustomerByName(){
+  deleteBook(id: number){
+    this.bookService.delete(id).subscribe({
+      next: () => {
+        this.books = this.books.filter((book) => 
+          book.id !== id
+        );
+      },
+      error: () => {
+        console.log("error: deleteBook")
+      }
+    });
+  }
+
+  availableBook(max: number, rest: number): boolean{
+    const value = max - rest;
+    return value > 0
+  }
+
+  //customer
+  findAllCustomersByName(){
     const customerName = this.customerName.trim();
 
     this.customerService.findAllByName(customerName).subscribe({
@@ -85,7 +81,21 @@ export class Home {
     });
   }
 
-  findAllPublisherByName(){
+  deleteCustomer(id: number){
+    this.customerService.delete(id).subscribe({
+      next: () => {
+        this.customers = this.customers.filter((customer) => 
+          customer.id !== id
+        );
+      },
+      error: () => {
+        console.log("error: deleteCustomer")
+      }
+    });
+  }
+
+  //publisher
+  findAllPublishersByName(){
     const publisherName = this.publisherName.trim();
 
     this.publisherService.findAllByName(publisherName).subscribe({
@@ -98,5 +108,17 @@ export class Home {
     });
   }
 
+  deletePublisher(id: number){
+    this.publisherService.delete(id).subscribe({
+      next: () => {
+        this.publishers = this.publishers.filter((publisher) => 
+          publisher.id !== id
+        );
+      },
+      error: () => {
+        console.log("error: deletePublisher")
+      }
+    });
+  }
   
 }
