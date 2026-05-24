@@ -1,0 +1,107 @@
+<div class="page">
+  <div class="form-shell">
+    <div class="topbar">
+      <a class="back-link" href="/">← Back to home</a>
+    </div>
+
+    <section class="panel">
+      <header class="hero">
+        <div>
+          <span class="eyebrow">Books</span>
+          <h1>Create book</h1>
+          <p>Register a book and select the publisher that owns it.</p>
+        </div>
+
+        <div class="hero-icon" aria-hidden="true">&#128216;</div>
+      </header>
+
+      <form class="form" (ngSubmit)="create()">
+        <div class="form-grid">
+          <div class="field">
+            <label for="book-name">Name</label>
+            <input
+              id="book-name"
+              name="name"
+              type="text"
+              placeholder="Book name"
+              [(ngModel)]="name"
+            />
+          </div>
+
+          <div class="field">
+            <label for="book-quantity">Quantity</label>
+            <input
+              id="book-quantity"
+              name="quantity"
+              type="number"
+              min="1"
+              placeholder="0"
+              [(ngModel)]="quantity"
+            />
+          </div>
+
+          <div class="field">
+            <label for="published-in">Published in</label>
+            <input
+              id="published-in"
+              name="publishedIn"
+              type="date"
+              [(ngModel)]="publishedIn"
+            />
+          </div>
+        </div>
+
+        <div class="publisher-picker">
+          <span class="section-label">Publisher</span>
+
+          <div class="publisher-actions">
+            <input
+              class="publisher-search"
+              name="publisherName"
+              type="text"
+              placeholder="Search publishers..."
+              [(ngModel)]="publisherName"
+              (keyup.enter)="findPublishers()"
+            />
+
+            <button class="btn secondary" type="button" (click)="findPublishers()">Search</button>
+          </div>
+
+          <div class="publisher-list">
+            @for (publisher of publishers; track publisher.id) {
+              <button
+                class="publisher-option"
+                type="button"
+                [class.selected]="selectedPublisher?.id === publisher.id"
+                (click)="selectPublisher(publisher)"
+              >
+                <span>{{ publisher.name }}</span>
+
+                @if (selectedPublisher?.id === publisher.id) {
+                  <span class="selected-chip">Selected</span>
+                }
+              </button>
+            } @empty {
+              <p class="empty">No publishers found.</p>
+            }
+          </div>
+        </div>
+
+        @if (error) {
+          <p class="message error">{{ error }}</p>
+        }
+
+        @if (message) {
+          <p class="message success">{{ message }}</p>
+        }
+
+        <div class="actions">
+          <button class="btn secondary" type="button" (click)="cancel()">Cancel</button>
+          <button class="btn primary" type="submit" [disabled]="!canCreate() || isSaving">
+            {{ isSaving ? 'Creating...' : 'Create' }}
+          </button>
+        </div>
+      </form>
+    </section>
+  </div>
+</div>

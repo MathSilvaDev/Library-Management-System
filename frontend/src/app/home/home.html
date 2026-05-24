@@ -96,17 +96,9 @@
         </button>
       }
 
-      <button class="create-btn" type="button">
+      <button class="create-btn" type="button" (click)="createSelectedMenu()">
         <span class="plus-icon" aria-hidden="true"></span>
-        <span class="create-label">
-          @if (selectedMenu === 'BOOKS') {
-            New Book
-          } @else if (selectedMenu === 'CUSTOMER') {
-            New Customer
-          } @else {
-            New Publisher
-          }
-        </span>
+        <span class="create-label">{{ createLabel }}</span>
       </button>
     </header>
 
@@ -218,7 +210,7 @@
             </div>
 
             <div class="right">
-              <button class="edit" type="button">Edit</button>
+              <a class="edit" [routerLink]="['/books', item.id, 'edit']">Edit</a>
               <button class="delete" type="button" (click)="deleteBook(item.id)">Delete</button>
             </div>
           </div>
@@ -238,7 +230,7 @@
             </div>
 
             <div class="right">
-              <button class="edit" type="button">Edit</button>
+              <a class="edit" [routerLink]="['/customers', item.id, 'edit']">Edit</a>
               <button class="delete" type="button" (click)="deleteCustomer(item.id)">Delete</button>
             </div>
           </div>
@@ -258,7 +250,7 @@
             </div>
 
             <div class="right">
-              <button class="edit" type="button">Edit</button>
+              <a class="edit" [routerLink]="['/publishers', item.id, 'edit']">Edit</a>
               <button class="delete" type="button" (click)="deletePublisher(item.id)">Delete</button>
             </div>
           </div>

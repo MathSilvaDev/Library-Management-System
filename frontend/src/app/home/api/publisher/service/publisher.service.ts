@@ -23,6 +23,10 @@ export class PublisherService {
     });
   }
 
+  findById(id: number): Observable<PublisherResponse>{
+    return this.http.get<PublisherResponse>(`${this.API_URL}/${id}`)
+  }
+
   delete(id: number): Observable<void>{
     return this.http.delete<void>(`${this.API_URL}/${id}`);
   }

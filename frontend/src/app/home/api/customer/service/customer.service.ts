@@ -22,6 +22,10 @@ export class CustomerService {
     });
   }
 
+  findById(id: number): Observable<CustomerResponse>{
+    return this.http.get<CustomerResponse>(`${this.API_URL}/${id}`)
+  }
+
   delete(id: number): Observable<void>{
     return this.http.delete<void>(`${this.API_URL}/${id}`);
   }

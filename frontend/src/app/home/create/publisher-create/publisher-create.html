@@ -1,0 +1,49 @@
+<div class="page">
+  <div class="form-shell">
+    <div class="topbar">
+      <a class="back-link" href="/">← Back to home</a>
+    </div>
+
+    <section class="panel">
+      <header class="hero">
+        <div>
+          <span class="eyebrow">Publishers</span>
+          <h1>Create publisher</h1>
+          <p>Register a publisher so books can be linked to it.</p>
+        </div>
+
+        <div class="hero-icon" aria-hidden="true">&#127970;</div>
+      </header>
+
+      <form class="form" (ngSubmit)="create()">
+        <div class="form-grid">
+          <div class="field full">
+            <label for="publisher-name">Name</label>
+            <input
+              id="publisher-name"
+              name="name"
+              type="text"
+              placeholder="Publisher name"
+              [(ngModel)]="name"
+            />
+          </div>
+        </div>
+
+        @if (error) {
+          <p class="message error">{{ error }}</p>
+        }
+
+        @if (message) {
+          <p class="message success">{{ message }}</p>
+        }
+
+        <div class="actions">
+          <button class="btn secondary" type="button" (click)="cancel()">Cancel</button>
+          <button class="btn primary" type="submit" [disabled]="!canCreate() || isSaving">
+            {{ isSaving ? 'Creating...' : 'Create' }}
+          </button>
+        </div>
+      </form>
+    </section>
+  </div>
+</div>

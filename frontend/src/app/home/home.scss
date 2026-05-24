@@ -11,18 +11,38 @@ button {
 
 .layout {
   display: flex;
-  min-height: 100vh;
+  height: 100vh;
+  min-height: 0;
+  overflow: hidden;
 }
 
 /* SIDEBAR */
 .sidebar {
   width: 116px;
+  height: 100vh;
   padding: 24px 14px;
   display: flex;
   flex-direction: column;
   gap: 12px;
   background: var(--sidebar);
   border-right: 1px solid rgba(255, 255, 255, 0.08);
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.sidebar::-webkit-scrollbar,
+.books::-webkit-scrollbar {
+  width: 8px;
+}
+
+.sidebar::-webkit-scrollbar-track,
+.books::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.24);
+  border-radius: 999px;
 }
 
 .sidebar-toggle {
@@ -154,6 +174,8 @@ button {
 .content {
   flex: 1;
   min-width: 0;
+  min-height: 0;
+  height: 100vh;
   padding: 28px;
   display: flex;
   flex-direction: column;
@@ -162,6 +184,7 @@ button {
 
 /* SEARCH */
 .search-container {
+  flex: 0 0 auto;
   display: flex;
   gap: 12px;
   margin-bottom: 22px;
@@ -264,6 +287,7 @@ button {
 
 /* TOP */
 .selected-book {
+  flex: 0 0 auto;
   min-height: 220px;
   padding: 32px;
   display: flex;
@@ -310,6 +334,7 @@ button {
 
 /* FILTER */
 .filters {
+  flex: 0 0 auto;
   display: flex;
   justify-content: center;
   gap: 10px;
@@ -343,16 +368,11 @@ button {
 
 /* BOOKS */
 .books {
-  overflow: auto;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
   padding-right: 8px;
-}
-
-.books::-webkit-scrollbar {
-  width: 8px;
-}
-
-.books::-webkit-scrollbar-track {
-  background: transparent;
 }
 
 .books::-webkit-scrollbar-thumb {
@@ -444,6 +464,8 @@ button {
   border-radius: 8px;
   cursor: pointer;
   font-weight: 700;
+  text-align: center;
+  text-decoration: none;
   transition:
     background 0.2s,
     color 0.2s;
@@ -476,11 +498,13 @@ button {
 
 @media (max-width: 760px) {
   .layout {
-    min-height: 100vh;
+    height: 100vh;
+    min-height: 0;
   }
 
   .sidebar {
     width: 88px;
+    height: 100vh;
     padding: 18px 10px;
   }
 
@@ -494,8 +518,10 @@ button {
   }
 
   .content {
+    height: 100vh;
+    min-height: 0;
     padding: 18px;
-    overflow: visible;
+    overflow: hidden;
   }
 
   .search-container {
@@ -519,6 +545,7 @@ button {
   .filters {
     justify-content: flex-start;
     overflow-x: auto;
+    overflow-y: hidden;
     padding-bottom: 2px;
   }
 

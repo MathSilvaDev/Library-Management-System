@@ -23,9 +23,20 @@
     sans-serif;
 }
 
+html,
 body {
-  min-height: 100vh;
+  height: 100%;
+}
+
+body {
+  height: 100%;
   overflow: hidden;
   background: var(--bg);
   color: var(--text);
+}
+
+app-root {
+  display: block;
+  height: 100%;
+  overflow: hidden;
 }
