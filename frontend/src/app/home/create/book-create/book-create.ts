@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { BookRequest } from '../../api/book/dto/book-request';
+import { CreateBookRequest } from '../../api/book/dto/request/create-book-request';
 import { BookService } from '../../api/book/service/book.service';
 import { PublisherResponse } from '../../api/publisher/dto/publisher-response';
 import { PublisherService } from '../../api/publisher/service/publisher.service';
@@ -58,7 +58,7 @@ export class BookCreate {
   create() {
     if (!this.canCreate() || !this.selectedPublisher || !this.quantity) return;
 
-    const request: BookRequest = {
+    const request: CreateBookRequest = {
       name: this.name.trim(),
       quantity: this.quantity,
       publishedIn: this.publishedIn as unknown as Date,

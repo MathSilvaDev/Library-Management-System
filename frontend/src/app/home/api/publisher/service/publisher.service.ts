@@ -27,6 +27,10 @@ export class PublisherService {
     return this.http.get<PublisherResponse>(`${this.API_URL}/${id}`)
   }
 
+  editInfo(id: number, name: string): Observable<void>{
+    return this.http.patch<void>(`${this.API_URL}/${id}`, { name })
+  }
+
   delete(id: number): Observable<void>{
     return this.http.delete<void>(`${this.API_URL}/${id}`);
   }

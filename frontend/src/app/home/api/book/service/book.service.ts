@@ -1,8 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BookRequest } from '../dto/book-request';
-import { BookResponse } from '../dto/book-response';
+import { CreateBookRequest } from '../dto/request/create-book-request';
+import { BookResponse } from '../dto/response/book-response';
 import { Observable } from 'rxjs';
+import { EditBookRequest } from '../dto/request/edit-book-request';
 
 @Injectable({
   providedIn: 'root',
@@ -13,7 +14,7 @@ export class BookService {
 
   constructor(private http: HttpClient){}
 
-  create(publisherId: number, request: BookRequest): Observable<BookResponse>{
+  create(publisherId: number, request: CreateBookRequest): Observable<BookResponse>{
     return this.http.post<BookResponse>(`${this.API_URL}/${publisherId}`, {...request});
   }
 
@@ -25,6 +26,10 @@ export class BookService {
 
   findById(id: number): Observable<BookResponse>{
     return this.http.get<BookResponse>(`${this.API_URL}/${id}`)
+  }
+
+  editInfo(id: number, request: EditBookRequest): Observable<void>{
+    return this.http.patch<void>(`${this.API_URL}/${id}`, { ...request })
   }
 
   delete(id: number): Observable<void>{

@@ -5,7 +5,7 @@ import { Router, RouterLink } from '@angular/router';
 import { BookService } from './api/book/service/book.service';
 import { CustomerService } from './api/customer/service/customer.service';
 import { PublisherService } from './api/publisher/service/publisher.service';
-import { BookResponse } from './api/book/dto/book-response';
+import { BookResponse } from './api/book/dto/response/book-response';
 import { CustomerResponse } from './api/customer/dto/customer-response';
 import { PublisherResponse } from './api/publisher/dto/publisher-response';
 
