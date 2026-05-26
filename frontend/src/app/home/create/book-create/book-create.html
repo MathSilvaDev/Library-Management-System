@@ -67,22 +67,23 @@
             <button class="btn secondary" type="button" (click)="findPublishers()">Search</button>
           </div>
 
-          <div class="publisher-list">
-            @for (publisher of publishers; track publisher.id) {
-              <button
-                class="publisher-option"
-                type="button"
-                [class.selected]="selectedPublisher?.id === publisher.id"
-                (click)="selectPublisher(publisher)"
-              >
-                <span>{{ publisher.name }}</span>
+          @if (selectedPublisher) {
+            <div class="selected-publisher">
+              <span class="selected-publisher-label">Selected publisher</span>
+              <strong>{{ selectedPublisher.name }}</strong>
+              <span class="selected-chip">Selected</span>
+            </div>
+          }
 
-                @if (selectedPublisher?.id === publisher.id) {
-                  <span class="selected-chip">Selected</span>
-                }
-              </button>
-            } @empty {
-              <p class="empty">No publishers found.</p>
+          <div class="publisher-list">
+            @if (selectablePublishers.length) {
+              @for (publisher of selectablePublishers; track publisher.id) {
+                <button class="publisher-option" type="button" (click)="selectPublisher(publisher)">
+                  <span>{{ publisher.name }}</span>
+                </button>
+              }
+            } @else {
+              <p class="empty">{{ selectedPublisher ? 'No other publishers found.' : 'No publishers found.' }}</p>
             }
           </div>
         </div>

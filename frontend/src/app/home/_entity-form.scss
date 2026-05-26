@@ -195,6 +195,35 @@ button {
     color 0.2s;
 }
 
+.selected-publisher {
+  min-height: 58px;
+  padding: 12px 14px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 4px 12px;
+  align-items: center;
+  border: 1px solid rgba(37, 99, 235, 0.28);
+  border-radius: 8px;
+  background: linear-gradient(135deg, #eff6ff, #ffffff);
+  color: var(--text);
+}
+
+.selected-publisher-label {
+  grid-column: 1 / -1;
+  color: var(--primary);
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.selected-publisher strong {
+  min-width: 0;
+  overflow: hidden;
+  font-size: 15px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .publisher-option:hover,
 .publisher-option.selected {
   border-color: var(--primary);
@@ -319,6 +348,18 @@ button {
 
   .actions {
     flex-direction: column-reverse;
+  }
+
+  .selected-publisher {
+    grid-template-columns: 1fr;
+  }
+
+  .selected-publisher strong {
+    white-space: normal;
+  }
+
+  .selected-chip {
+    justify-self: start;
   }
 
   .btn {

@@ -24,6 +24,14 @@ export class BookCreate {
   message = '';
   error = '';
 
+  get selectablePublishers(): PublisherResponse[] {
+    if (!this.selectedPublisher) {
+      return this.publishers;
+    }
+
+    return this.publishers.filter((publisher) => publisher.id !== this.selectedPublisher?.id);
+  }
+
   constructor(
     private bookService: BookService,
     private publisherService: PublisherService,
@@ -38,6 +46,7 @@ export class BookCreate {
     this.publisherService.findAllByName(this.publisherName.trim(), 'ALL').subscribe({
       next: (response) => {
         this.publishers = response;
+        this.showSelectedPublisherFirst();
       },
       error: () => {
         this.error = 'Could not load publishers.';
@@ -47,6 +56,7 @@ export class BookCreate {
 
   selectPublisher(publisher: PublisherResponse) {
     this.selectedPublisher = publisher;
+    this.showSelectedPublisherFirst();
   }
 
   canCreate(): boolean {
@@ -72,6 +82,7 @@ export class BookCreate {
       next: () => {
         this.message = 'Book created.';
         this.router.navigate(['/']);
+        window.alert("Book created successfully.");
       },
       error: () => {
         this.error = 'Could not create book.';
@@ -82,5 +93,14 @@ export class BookCreate {
 
   cancel() {
     this.router.navigate(['/']);
+  }
+
+  private showSelectedPublisherFirst() {
+    if (this.selectedPublisher) {
+      this.publishers = [
+        this.selectedPublisher,
+        ...this.publishers.filter((publisher) => publisher.id !== this.selectedPublisher?.id)
+      ];
+    }
   }
 }

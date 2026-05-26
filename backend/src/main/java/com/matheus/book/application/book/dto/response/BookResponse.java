@@ -8,5 +8,6 @@ public record BookResponse(
         Integer quantity,
         Integer borrowedQuantity,
         String publisherName,
-        LocalDate publishedIn
+        LocalDate publishedIn,
+        Long publisherId
 ) { }

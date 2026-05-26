@@ -36,6 +36,7 @@ export class PublisherCreate {
       next: () => {
         this.message = 'Publisher created.';
         this.router.navigate(['/']);
+        window.alert("Publisher created successfully.");
       },
       error: () => {
         this.error = 'Could not create publisher.';

@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -54,6 +55,11 @@ public class BookService {
         }
 
         return books.stream()
+                .sorted(Comparator.comparing(
+                                Book::getName,
+                                String.CASE_INSENSITIVE_ORDER
+                        )
+                )
                 .map(this::toResponse)
                 .toList();
     }
@@ -135,7 +141,8 @@ public class BookService {
                 book.getQuantity(),
                 book.getCustomers().size(),
                 book.getPublisher().getName(),
-                book.getPublishedIn()
+                book.getPublishedIn(),
+                book.getPublisher().getId()
         );
     }
 

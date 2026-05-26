@@ -35,6 +35,7 @@ export class CustomerCreate {
       next: () => {
         this.message = 'Customer created.';
         this.router.navigate(['/']);
+        window.alert("Customer created successfully.");
       },
       error: () => {
         this.error = 'Could not create customer.';

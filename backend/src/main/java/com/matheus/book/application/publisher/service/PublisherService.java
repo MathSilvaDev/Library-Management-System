@@ -4,6 +4,7 @@ import com.matheus.book.application.publisher.dto.request.CreatePublisherRequest
 import com.matheus.book.application.publisher.dto.request.EditPublisherRequest;
 import com.matheus.book.application.publisher.dto.response.PublisherResponse;
 import com.matheus.book.application.publisher.enums.PublisherFilter;
+import com.matheus.book.domain.book.entity.Book;
 import com.matheus.book.domain.publisher.entity.Publisher;
 import com.matheus.book.domain.publisher.repository.PublisherRepository;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -44,6 +46,11 @@ public class PublisherService {
         }
 
         return publishers.stream()
+                .sorted(Comparator.comparing(
+                            Publisher::getName,
+                            String.CASE_INSENSITIVE_ORDER
+                        )
+                )
                 .map(this::toResponse)
                 .toList();
     }

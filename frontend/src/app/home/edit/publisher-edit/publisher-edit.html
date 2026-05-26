@@ -9,20 +9,34 @@
         <div>
           <span class="eyebrow">Publishers</span>
           <h1>Edit publisher</h1>
-          <p>This screen is ready for the backend update route.</p>
+          <p>Update the publisher name used by linked books.</p>
         </div>
 
         <div class="hero-icon" aria-hidden="true">&#127970;</div>
       </header>
 
-      <div class="placeholder">
-        <div class="placeholder-row"></div>
+      <form class="form">
+        <div class="form-grid">
+          <div class="field full">
+            <label for="publisher-name">Name</label>
+            <input
+              id="publisher-name"
+              name="name"
+              type="text"
+              placeholder="Publisher name"
+              [(ngModel)]="name"
+            />
+          </div>
+        </div>
+
+        <p class="message error" hidden>Could not update publisher.</p>
+        <p class="message success" hidden>Publisher updated.</p>
 
         <div class="actions">
           <a class="btn secondary" href="/">Cancel</a>
-          <button class="btn primary" type="button" disabled>Save</button>
+          <button class="btn primary" type="button" (click)="saveEdit()">Save</button>
         </div>
-      </div>
+      </form>
     </section>
   </div>
 </div>

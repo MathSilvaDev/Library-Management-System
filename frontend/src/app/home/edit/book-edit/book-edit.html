@@ -9,22 +9,93 @@
         <div>
           <span class="eyebrow">Books</span>
           <h1>Edit book</h1>
-          <p>This screen is ready for the backend update route.</p>
+          <p>Update the book details and publisher selection.</p>
         </div>
 
         <div class="hero-icon" aria-hidden="true">&#128216;</div>
       </header>
 
-      <div class="placeholder">
-        <div class="placeholder-row"></div>
-        <div class="placeholder-row"></div>
-        <div class="placeholder-row"></div>
+      <form class="form">
+        <div class="form-grid">
+          <div class="field">
+            <label for="book-name">Name</label>
+            <input
+              id="book-name"
+              name="name"
+              type="text"
+              placeholder="Book name"
+              [(ngModel)]="name"
+            />
+          </div>
+
+          <div class="field">
+            <label for="book-quantity">Quantity</label>
+            <input
+              id="book-quantity"
+              name="quantity"
+              type="number"
+              min="1"
+              placeholder="0"
+              [(ngModel)]="quantity"
+            />
+          </div>
+
+          <div class="field">
+            <label for="published-in">Published in</label>
+            <input
+              id="published-in"
+              name="publishedIn"
+              type="date"
+              [(ngModel)]="publishedIn"
+            />
+          </div>
+        </div>
+
+        <div class="publisher-picker">
+          <span class="section-label">Publisher</span>
+
+          <div class="publisher-actions">
+            <input
+              class="publisher-search"
+              name="publisherName"
+              type="text"
+              placeholder="Search publishers..."
+              [(ngModel)]="publisherName"
+              (keyup.enter)="findAllPublishersByName()"
+            />
+
+            <button class="btn secondary" type="button" (click)="findAllPublishersByName()">Search</button>
+          </div>
+
+          @if (selectedPublisher) {
+            <div class="selected-publisher">
+              <span class="selected-publisher-label">Selected publisher</span>
+              <strong>{{ selectedPublisher.name }}</strong>
+              <span class="selected-chip">Selected</span>
+            </div>
+          }
+
+          <div class="publisher-list">
+            @if (selectablePublishers.length) {
+              @for (publisher of selectablePublishers; track publisher.id) {
+                <button class="publisher-option" type="button" (click)="selectPublisher(publisher)">
+                  <span>{{ publisher.name }}</span>
+                </button>
+              }
+            } @else {
+              <p class="empty">{{ selectedPublisher ? 'No other publishers found.' : 'No publishers found.' }}</p>
+            }
+          </div>
+        </div>
+
+        <p class="message error" hidden>Could not update book.</p>
+        <p class="message success" hidden>Book updated.</p>
 
         <div class="actions">
           <a class="btn secondary" href="/">Cancel</a>
-          <button class="btn primary" type="button" disabled>Save</button>
+          <button class="btn primary" type="button" (click)="saveEdit()">Save</button>
         </div>
-      </div>
+      </form>
     </section>
   </div>
 </div>

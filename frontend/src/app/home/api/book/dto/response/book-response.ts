@@ -5,4 +5,5 @@ export interface BookResponse{
   borrowedQuantity: number;
   publisherName: string;
   publishedIn: Date;
+  publisherId: number;
 }

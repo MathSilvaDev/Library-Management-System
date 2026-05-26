@@ -4,14 +4,17 @@ import com.matheus.book.application.customer.dto.request.CreateCustomerRequest;
 import com.matheus.book.application.customer.dto.request.EditCustomerRequest;
 import com.matheus.book.application.customer.dto.response.CustomerResponse;
 import com.matheus.book.application.customer.enums.CustomerFilter;
+import com.matheus.book.domain.book.entity.Book;
 import com.matheus.book.domain.customer.entity.Customer;
 import com.matheus.book.domain.customer.repository.CustomerRepository;
+import com.matheus.book.domain.publisher.entity.Publisher;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -44,6 +47,11 @@ public class CustomerService {
         }
 
         return customers.stream()
+                .sorted(Comparator.comparing(
+                                Customer::getName,
+                                String.CASE_INSENSITIVE_ORDER
+                        )
+                )
                 .map(this::toResponse)
                 .toList();
     }
