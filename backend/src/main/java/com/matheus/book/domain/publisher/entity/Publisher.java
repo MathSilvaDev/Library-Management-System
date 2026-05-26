@@ -28,4 +28,8 @@ public class Publisher {
     public Publisher(String name){
         this.name = name;
     }
+
+    public void edit(String name){
+        this.name = name;
+    }
 }

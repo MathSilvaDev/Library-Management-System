@@ -1,6 +1,7 @@
 package com.matheus.book.application.publisher.controller;
 
 import com.matheus.book.application.publisher.dto.request.CreatePublisherRequest;
+import com.matheus.book.application.publisher.dto.request.EditPublisherRequest;
 import com.matheus.book.application.publisher.dto.response.PublisherResponse;
 import com.matheus.book.application.publisher.enums.PublisherFilter;
 import com.matheus.book.application.publisher.service.PublisherService;
@@ -35,6 +36,21 @@ public class PublisherController {
 
         return ResponseEntity.ok(
                 publisherService.findAllByName(name, filter));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<PublisherResponse> findById(@PathVariable Long id){
+
+        return ResponseEntity.ok(
+                publisherService.findById(id));
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<Void> editInfo(@PathVariable Long id,
+                                         @Valid @RequestBody EditPublisherRequest request){
+        publisherService.editInfo(id, request);
+
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{id}")

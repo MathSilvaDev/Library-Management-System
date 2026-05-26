@@ -1,6 +1,7 @@
 package com.matheus.book.application.customer.service;
 
 import com.matheus.book.application.customer.dto.request.CreateCustomerRequest;
+import com.matheus.book.application.customer.dto.request.EditCustomerRequest;
 import com.matheus.book.application.customer.dto.response.CustomerResponse;
 import com.matheus.book.application.customer.enums.CustomerFilter;
 import com.matheus.book.domain.customer.entity.Customer;
@@ -47,11 +48,22 @@ public class CustomerService {
                 .toList();
     }
 
+    public CustomerResponse findById(Long id){
+        Customer customer = findCustomerById(id);
+
+        return toResponse(customer);
+    }
+
+    @Transactional
+    public void editInfo(Long id, EditCustomerRequest request){
+        Customer customer = findCustomerById(id);
+
+        customer.edit(request.name());
+    }
+
     @Transactional
     public void delete(Long id){
-        Customer customer = customerRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND, "Customer not found"));
+        Customer customer = findCustomerById(id);
 
         if(!customer.getBooks().isEmpty()){
             throw new ResponseStatusException(HttpStatus.CONFLICT,
@@ -59,6 +71,12 @@ public class CustomerService {
         }
 
         customerRepository.delete(customer);
+    }
+
+    private Customer findCustomerById(Long id){
+        return customerRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "Customer not found"));
     }
 
     private CustomerResponse toResponse(Customer customer){

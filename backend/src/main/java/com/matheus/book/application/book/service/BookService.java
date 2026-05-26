@@ -1,6 +1,7 @@
 package com.matheus.book.application.book.service;
 
 import com.matheus.book.application.book.dto.request.CreateBookRequest;
+import com.matheus.book.application.book.dto.request.EditBookRequest;
 import com.matheus.book.application.book.dto.response.BookResponse;
 import com.matheus.book.application.book.enums.BookFilter;
 import com.matheus.book.domain.book.entity.Book;
@@ -27,10 +28,7 @@ public class BookService {
 
     public BookResponse create(Long publisherId, CreateBookRequest request){
 
-        Publisher publisher = publisherRepository.findById(publisherId)
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND, "Publisher not found"));
-
+        Publisher publisher = findPublisherById(publisherId);
         Book book = new Book(
                 request.name(),
                 publisher,
@@ -61,19 +59,27 @@ public class BookService {
     }
 
     public BookResponse findById(Long id){
-
-        Book book = bookRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND, "Book not found"));
+        Book book = findBookById(id);
 
         return toResponse(book);
     }
 
     @Transactional
+    public void editInfo(Long bookId, EditBookRequest request){
+        Book book = findBookById(bookId);
+        Publisher publisher = findPublisherById(request.publisherId());
+
+        book.edit(
+                request.name(),
+                publisher,
+                request.publishedIn(),
+                request.quantity()
+        );
+    }
+
+    @Transactional
     public void delete(Long id){
-        Book book = bookRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND, "Book not found"));
+        Book book = findBookById(id);
 
         if(!book.getCustomers().isEmpty()){
             throw new ResponseStatusException(
@@ -87,9 +93,7 @@ public class BookService {
     @Transactional
     public void borrowBook(Long bookId ,Long customerId){
 
-        Book book = bookRepository.findById(bookId)
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND, "Book not found"));
+        Book book = findBookById(bookId);
 
         Customer customer = customerRepository.findById(customerId)
                 .orElseThrow(() -> new ResponseStatusException(
@@ -110,6 +114,18 @@ public class BookService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
         book.returnBook(customer);
+    }
+
+    private Book findBookById(Long id){
+        return bookRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "Book not found"));
+    }
+
+    private Publisher findPublisherById(Long id){
+        return publisherRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "Publisher not found"));
     }
 
     private BookResponse toResponse(Book book){

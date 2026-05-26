@@ -50,6 +50,18 @@ public class Book {
         setQuantity(quantity);
     }
 
+    public void edit(String name, Publisher publisher, LocalDate publishedIn, Integer quantity){
+
+        if(quantity == null || quantity < customers.size()){
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Invalid quantity");
+        }
+
+        this.name = name;
+        this.publisher = publisher;
+        this.publishedIn = publishedIn;
+        this.quantity = quantity;
+    }
+
     public void borrowBook(Customer customer){
         if(!isAvailable()){
             throw new ResponseStatusException(

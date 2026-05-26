@@ -1,6 +1,7 @@
 package com.matheus.book.application.book.controller;
 
 import com.matheus.book.application.book.dto.request.CreateBookRequest;
+import com.matheus.book.application.book.dto.request.EditBookRequest;
 import com.matheus.book.application.book.dto.response.BookResponse;
 import com.matheus.book.application.book.enums.BookFilter;
 import com.matheus.book.application.book.service.BookService;
@@ -41,6 +42,14 @@ public class BookController {
 
         return ResponseEntity.ok(
                 bookService.findById(id));
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<Void> editInfo(@PathVariable Long id,
+                                         @Valid @RequestBody EditBookRequest request){
+        bookService.editInfo(id, request);
+
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{id}")

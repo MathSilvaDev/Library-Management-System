@@ -1,6 +1,7 @@
 package com.matheus.book.application.publisher.service;
 
 import com.matheus.book.application.publisher.dto.request.CreatePublisherRequest;
+import com.matheus.book.application.publisher.dto.request.EditPublisherRequest;
 import com.matheus.book.application.publisher.dto.response.PublisherResponse;
 import com.matheus.book.application.publisher.enums.PublisherFilter;
 import com.matheus.book.domain.publisher.entity.Publisher;
@@ -47,11 +48,22 @@ public class PublisherService {
                 .toList();
     }
 
+    public PublisherResponse findById(Long id){
+        Publisher publisher = findPublisherById(id);
+
+        return toResponse(publisher);
+    }
+
+    @Transactional
+    public void editInfo(Long id, EditPublisherRequest request){
+        Publisher publisher = findPublisherById(id);
+
+        publisher.edit(request.name());
+    }
+
     @Transactional
     public void delete(Long id){
-        Publisher publisher = publisherRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND, "Publisher not found"));
+        Publisher publisher = findPublisherById(id);
 
         if(!publisher.getBooks().isEmpty()){
             throw new ResponseStatusException(HttpStatus.CONFLICT,
@@ -59,6 +71,12 @@ public class PublisherService {
         }
 
         publisherRepository.delete(publisher);
+    }
+
+    private Publisher findPublisherById(Long id){
+        return publisherRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "Publisher not found"));
     }
 
     private PublisherResponse toResponse(Publisher publisher){
