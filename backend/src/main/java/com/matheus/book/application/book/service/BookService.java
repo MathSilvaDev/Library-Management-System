@@ -4,6 +4,7 @@ import com.matheus.book.application.book.dto.request.CreateBookRequest;
 import com.matheus.book.application.book.dto.request.EditBookRequest;
 import com.matheus.book.application.book.dto.response.BookResponse;
 import com.matheus.book.application.book.enums.BookFilter;
+import com.matheus.book.application.customer.dto.response.CustomerSimpleResponse;
 import com.matheus.book.domain.book.entity.Book;
 import com.matheus.book.domain.book.repository.BookRepository;
 import com.matheus.book.domain.customer.entity.Customer;
@@ -142,7 +143,13 @@ public class BookService {
                 book.getCustomers().size(),
                 book.getPublisher().getName(),
                 book.getPublishedIn(),
-                book.getPublisher().getId()
+                book.getPublisher().getId(),
+                book.getCustomers()
+                        .stream()
+                        .map(customer -> new CustomerSimpleResponse(
+                                customer.getId(),
+                                customer.getName()
+                        )).toList()
         );
     }
 

@@ -1,0 +1,157 @@
+<div class="page">
+  <div class="detail-shell">
+    <div class="topbar">
+      <a class="back-link" routerLink="/">Back to home</a>
+    </div>
+
+    @if (loading) {
+      <section class="panel">
+        <p class="empty">Loading book...</p>
+      </section>
+    } @else if (book) {
+      <section class="panel">
+        <header class="hero">
+          <div>
+            <span class="eyebrow">Book details</span>
+            <h1>{{ book.name }}</h1>
+            <p>{{ book.publisherName }}</p>
+          </div>
+
+          <div class="hero-icon" aria-hidden="true">&#128216;</div>
+        </header>
+
+        <div class="content">
+          <section class="stats-grid" aria-label="Book information">
+            <div class="stat">
+              <span>Total quantity</span>
+              <strong>{{ book.quantity }}</strong>
+            </div>
+
+            <div class="stat">
+              <span>Borrowed</span>
+              <strong>{{ book.borrowedQuantity }}</strong>
+            </div>
+
+            <div class="stat">
+              <span>Available</span>
+              <strong>{{ availableCopies }}</strong>
+            </div>
+
+            <div class="stat">
+              <span>Published in</span>
+              <strong>{{ formatDate(book.publishedIn) }}</strong>
+            </div>
+          </section>
+
+          @if (error) {
+            <p class="message error">{{ error }}</p>
+          }
+
+          @if (message) {
+            <p class="message success">{{ message }}</p>
+          }
+
+          <section class="section">
+            <div class="section-header">
+              <div>
+                <span class="section-label">Borrow</span>
+                <h2>Customers</h2>
+              </div>
+
+              <button
+                class="btn primary"
+                type="button"
+                [disabled]="!canBorrow"
+                (click)="openBorrowCustomers()"
+              >
+                Borrow book
+              </button>
+            </div>
+
+            @if (!canBorrow) {
+              <p class="hint">There are no available copies of this book.</p>
+            }
+
+            @if (showBorrowCustomers) {
+              <div class="picker">
+                <div class="picker-actions">
+                  <input
+                    class="picker-search"
+                    type="text"
+                    name="customerName"
+                    placeholder="Search customers..."
+                    [(ngModel)]="customerName"
+                    (keyup.enter)="findCustomers()"
+                  />
+
+                  <button class="btn secondary" type="button" (click)="findCustomers()">Search</button>
+                </div>
+
+                <div class="list">
+                  @if (isLoadingCustomers) {
+                    <p class="empty">Loading customers...</p>
+                  } @else {
+                    @for (customer of customers; track customer.id) {
+                      <div class="list-row">
+                        <div>
+                          <strong>{{ customer.name }}</strong>
+                          <span>Customer</span>
+                        </div>
+
+                        <button
+                          class="btn primary"
+                          type="button"
+                          [disabled]="!canBorrow || actionCustomerId === customer.id"
+                          (click)="borrowBook(customer.id)"
+                        >
+                          {{ actionCustomerId === customer.id ? 'Borrowing...' : 'Borrow' }}
+                        </button>
+                      </div>
+                    } @empty {
+                      <p class="empty">No customers found.</p>
+                    }
+                  }
+                </div>
+              </div>
+            }
+          </section>
+
+          <section class="section">
+            <div class="section-header">
+              <div>
+                <span class="section-label">Returns</span>
+                <h2>Customers with this book</h2>
+              </div>
+            </div>
+
+            <div class="list scroll-list">
+              @for (customer of borrowedCustomers; track $index) {
+                <div class="list-row">
+                  <div>
+                    <strong>{{ customer.name }}</strong>
+                    <span>Borrowed {{ book.name }}</span>
+                  </div>
+
+                  <button
+                    class="btn danger"
+                    type="button"
+                    [disabled]="actionCustomerId === customer.id"
+                    (click)="returnBook(customer.id)"
+                  >
+                    {{ actionCustomerId === customer.id ? 'Returning...' : 'Return' }}
+                  </button>
+                </div>
+              } @empty {
+                <p class="empty">No customer has borrowed this book.</p>
+              }
+            </div>
+          </section>
+        </div>
+      </section>
+    } @else {
+      <section class="panel">
+        <p class="empty">Book not found.</p>
+      </section>
+    }
+  </div>
+</div>

@@ -1,4 +1,6 @@
-export interface BookResponse{
+import { CustomerSimpleResponse } from '../../../customer/dto/response/customer-simple-response';
+
+export interface BookResponse {
   id: number;
   name: string;
   quantity: number;
@@ -6,4 +8,5 @@ export interface BookResponse{
   publisherName: string;
   publishedIn: Date;
   publisherId: number;
+  customerSimpleResponses: CustomerSimpleResponse[];
 }

@@ -1,0 +1,146 @@
+<div class="page">
+  <div class="detail-shell">
+    <div class="topbar">
+      <a class="back-link" routerLink="/">Back to home</a>
+    </div>
+
+    @if (loading) {
+      <section class="panel">
+        <p class="empty">Loading customer...</p>
+      </section>
+    } @else if (customer) {
+      <section class="panel">
+        <header class="hero">
+          <div>
+            <span class="eyebrow">Customer details</span>
+            <h1>{{ customer.name }}</h1>
+            <p>{{ borrowedBooks.length }} borrowed books</p>
+          </div>
+
+          <div class="hero-icon" aria-hidden="true">&#128100;</div>
+        </header>
+
+        <div class="content">
+          <section class="stats-grid" aria-label="Customer information">
+            <div class="stat">
+              <span>Borrowed books</span>
+              <strong>{{ borrowedBooks.length }}</strong>
+            </div>
+
+            <div class="stat">
+              <span>Status</span>
+              <strong>{{ borrowedBooks.length ? 'Borrowing' : 'Clear' }}</strong>
+            </div>
+          </section>
+
+          @if (error) {
+            <p class="message error">{{ error }}</p>
+          }
+
+          @if (message) {
+            <p class="message success">{{ message }}</p>
+          }
+
+          <section class="section">
+            <div class="section-header">
+              <div>
+                <span class="section-label">Borrow</span>
+                <h2>Books</h2>
+              </div>
+
+              <button class="btn primary" type="button" (click)="openBorrowBooks()">Borrow book</button>
+            </div>
+
+            @if (showBorrowBooks) {
+              <div class="picker">
+                <div class="picker-actions">
+                  <input
+                    class="picker-search"
+                    type="text"
+                    name="bookName"
+                    placeholder="Search books..."
+                    [(ngModel)]="bookName"
+                    (keyup.enter)="findBooks()"
+                  />
+
+                  <button class="btn secondary" type="button" (click)="findBooks()">Search</button>
+                </div>
+
+                <div class="list">
+                  @if (isLoadingBooks) {
+                    <p class="empty">Loading books...</p>
+                  } @else {
+                    @for (book of books; track book.id) {
+                      <div class="list-row">
+                        <div>
+                          <strong>{{ book.name }}</strong>
+                          <span>{{ book.publisherName }}</span>
+                          @if (isBookAvailable(book)) {
+                            <em class="available">{{ availableCopies(book) }} available</em>
+                          } @else {
+                            <em class="unavailable">Unavailable</em>
+                          }
+                        </div>
+
+                        <button
+                          class="btn primary"
+                          type="button"
+                          [disabled]="!isBookAvailable(book) || actionBookId === book.id"
+                          (click)="borrowBook(book)"
+                        >
+                          {{ actionBookId === book.id ? 'Borrowing...' : 'Borrow' }}
+                        </button>
+                      </div>
+                    } @empty {
+                      <p class="empty">No books found.</p>
+                    }
+                  }
+                </div>
+              </div>
+            }
+          </section>
+
+          <section class="section">
+            <div class="section-header">
+              <div>
+                <span class="section-label">Returns</span>
+                <h2>Borrowed books</h2>
+              </div>
+            </div>
+
+            <div class="list scroll-list">
+              @for (book of borrowedBooks; track $index) {
+                <div class="list-row">
+                  <div>
+                    <strong>{{ book.name }}</strong>
+                    <span>{{ book.publisherName }}</span>
+                    @if (book.available) {
+                      <em class="available">Available copies remain</em>
+                    } @else {
+                      <em class="unavailable">No copies remain</em>
+                    }
+                  </div>
+
+                  <button
+                    class="btn danger"
+                    type="button"
+                    [disabled]="actionBookId === book.id"
+                    (click)="returnBook(book.id)"
+                  >
+                    {{ actionBookId === book.id ? 'Returning...' : 'Return' }}
+                  </button>
+                </div>
+              } @empty {
+                <p class="empty">This customer has no borrowed books.</p>
+              }
+            </div>
+          </section>
+        </div>
+      </section>
+    } @else {
+      <section class="panel">
+        <p class="empty">Customer not found.</p>
+      </section>
+    }
+  </div>
+</div>

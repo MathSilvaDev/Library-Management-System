@@ -6,7 +6,7 @@ import { BookService } from './api/book/service/book.service';
 import { CustomerService } from './api/customer/service/customer.service';
 import { PublisherService } from './api/publisher/service/publisher.service';
 import { BookResponse } from './api/book/dto/response/book-response';
-import { CustomerResponse } from './api/customer/dto/customer-response';
+import { CustomerResponse } from './api/customer/dto/response/customer-response';
 import { PublisherResponse } from './api/publisher/dto/publisher-response';
 
 type Menu = 'BOOKS' | 'CUSTOMER' | 'PUBLISHER';
@@ -143,6 +143,10 @@ export class Home {
     return value > 0
   }
 
+  openBook(id: number) {
+    this.router.navigate(['/books', id]);
+  }
+
   //customer
   findAllCustomersByName(){
     const customerName = this.customerName.trim();
@@ -171,6 +175,10 @@ export class Home {
         console.log("error: deleteCustomer")
       }
     });
+  }
+
+  openCustomer(id: number) {
+    this.router.navigate(['/customers', id]);
   }
 
   //publisher

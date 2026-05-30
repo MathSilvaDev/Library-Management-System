@@ -79,7 +79,7 @@ public class Book {
         customers.remove(customer);
     }
 
-    private boolean isAvailable(){
+    public boolean isAvailable(){
         return quantity > customers.size();
     }
 
