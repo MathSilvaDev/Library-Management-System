@@ -60,10 +60,9 @@
                     name="bookName"
                     placeholder="Search books..."
                     [(ngModel)]="bookName"
-                    (keyup.enter)="findBooks()"
                   />
 
-                  <button class="btn secondary" type="button" (click)="findBooks()">Search</button>
+                  <button class="btn secondary" type="button" (click)="searchBooks()">Search</button>
                 </div>
 
                 <div class="list">
@@ -96,6 +95,24 @@
                     }
                   }
                 </div>
+
+                <nav class="pagination-preview" aria-label="Book pagination">
+                  <button
+                    class="pagination-arrow previous"
+                    type="button"
+                    aria-label="Previous book page"
+                    [disabled]="bookPageContent.first"
+                    (click)="findBooks(-1)"
+                  ></button>
+
+                  <button
+                    class="pagination-arrow next"
+                    type="button"
+                    aria-label="Next book page"
+                    [disabled]="bookPageContent.last"
+                    (click)="findBooks(1)"
+                  ></button>
+                </nav>
               </div>
             }
           </section>
@@ -108,8 +125,20 @@
               </div>
             </div>
 
+            <div class="picker-actions">
+              <input
+                class="picker-search"
+                type="text"
+                name="borrowedBookName"
+                placeholder="Search borrowed books..."
+                [(ngModel)]="borrowedBookName"
+              />
+
+              <button class="btn secondary" type="button" (click)="searchBorrowedBooks()">Search</button>
+            </div>
+
             <div class="list scroll-list">
-              @for (book of borrowedBooks; track $index) {
+              @for (book of paginatedBorrowedBooks; track $index) {
                 <div class="list-row">
                   <div>
                     <strong>{{ book.name }}</strong>
@@ -134,6 +163,24 @@
                 <p class="empty">This customer has no borrowed books.</p>
               }
             </div>
+
+            <nav class="pagination-preview" aria-label="Borrowed book pagination">
+              <button
+                class="pagination-arrow previous"
+                type="button"
+                aria-label="Previous borrowed book page"
+                [disabled]="borrowedBooksPageContent.first"
+                (click)="changeBorrowedBooksPage(-1)"
+              ></button>
+
+              <button
+                class="pagination-arrow next"
+                type="button"
+                aria-label="Next borrowed book page"
+                [disabled]="borrowedBooksPageContent.last"
+                (click)="changeBorrowedBooksPage(1)"
+              ></button>
+            </nav>
           </section>
         </div>
       </section>

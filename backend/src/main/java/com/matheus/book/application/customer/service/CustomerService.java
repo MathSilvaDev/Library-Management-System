@@ -8,13 +8,14 @@ import com.matheus.book.application.customer.enums.CustomerFilter;
 import com.matheus.book.domain.customer.entity.Customer;
 import com.matheus.book.domain.customer.repository.CustomerRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
-
-import java.util.Comparator;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -30,35 +31,40 @@ public class CustomerService {
         return toResponse(customer);
     }
 
-    public List<CustomerResponse> findAllByName(String name, CustomerFilter filter){
+    public Page<CustomerResponse> findAllByName(String name, CustomerFilter filter,
+                                                int page, int size){
+        Page<Customer> customers;
 
-        List<Customer> customers;
+        Pageable pageable = PageRequest.of(
+                page,
+                size,
+                Sort.by(
+                        Sort.Order.asc("name").ignoreCase()
+                )
+        );
 
         switch (filter){
-            case ALL -> customers = customerRepository.findAllByName(name);
+            case ALL -> customers = customerRepository.findAllByName(name, pageable);
             case WITH_BORROWED_BOOKS ->
-                    customers = customerRepository.findWithBorrowedBooksByName(name);
+                    customers = customerRepository.findWithBorrowedBooksByName(name, pageable);
 
             case WITHOUT_BORROWED_BOOKS ->
-                    customers = customerRepository.findWithoutBorrowedBooksByName(name);
+                    customers = customerRepository.findWithoutBorrowedBooksByName(name, pageable);
 
-            default -> customers = customerRepository.findAll();
+            default -> customers = customerRepository.findAll(pageable);
         }
 
-        return customers.stream()
-                .sorted(Comparator.comparing(
-                                Customer::getName,
-                                String.CASE_INSENSITIVE_ORDER
-                        )
-                )
-                .map(this::toResponse)
-                .toList();
+        return customers.map(this::toResponse);
     }
 
     public CustomerResponse findById(Long id){
         Customer customer = findCustomerById(id);
 
         return toResponse(customer);
+    }
+
+    public int info(){
+        return customerRepository.findAll().size();
     }
 
     @Transactional
@@ -100,4 +106,5 @@ public class CustomerService {
                         )).toList()
         );
     }
+
 }

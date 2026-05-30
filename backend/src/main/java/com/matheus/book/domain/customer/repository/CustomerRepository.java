@@ -1,6 +1,8 @@
 package com.matheus.book.domain.customer.repository;
 
 import com.matheus.book.domain.customer.entity.Customer;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -16,7 +18,7 @@ public interface CustomerRepository extends JpaRepository<Customer, Long> {
             OR :name = ''
             OR LOWER(c.name) LIKE LOWER(CONCAT('%', :name, '%')))
     """)
-    List<Customer> findAllByName(String name);
+    Page<Customer> findAllByName(String name, Pageable pageable);
 
     @Query("""
         SELECT c FROM Customer c
@@ -25,7 +27,7 @@ public interface CustomerRepository extends JpaRepository<Customer, Long> {
             OR LOWER(c.name) LIKE LOWER(CONCAT('%', :name, '%')))
         AND SIZE(c.books) > 0
     """)
-    List<Customer> findWithBorrowedBooksByName(String name);
+    Page<Customer> findWithBorrowedBooksByName(String name, Pageable pageable);
 
     @Query("""
         SELECT c FROM Customer c
@@ -34,5 +36,5 @@ public interface CustomerRepository extends JpaRepository<Customer, Long> {
             OR LOWER(c.name) LIKE LOWER(CONCAT('%', :name, '%')))
         AND SIZE(c.books) = 0
     """)
-    List<Customer> findWithoutBorrowedBooksByName(String name);
+    Page<Customer> findWithoutBorrowedBooksByName(String name, Pageable pageable);
 }

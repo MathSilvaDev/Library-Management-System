@@ -7,6 +7,8 @@ import { BookService } from '../../api/book/service/book.service';
 import { CustomerResponse } from '../../api/customer/dto/response/customer-response';
 import { CustomerService } from '../../api/customer/service/customer.service';
 
+type PageContent = { first: boolean | null; last: boolean | null };
+
 @Component({
   selector: 'app-book-detail',
   imports: [CommonModule, FormsModule, RouterLink],
@@ -18,15 +20,45 @@ export class BookDetail {
   book: BookResponse | null = null;
   customers: CustomerResponse[] = [];
   customerName = '';
+  borrowedCustomerName = '';
+  searchedCustomerName = '';
+  searchedBorrowedCustomerName = '';
   showBorrowCustomers = false;
   loading = true;
   isLoadingCustomers = false;
   actionCustomerId: number | null = null;
   message = '';
   error = '';
+  customerPage: number = 0;
+  borrowedCustomersPage: number = 0;
+  readonly borrowedCustomersPageSize: number = 20;
+  customerPageContent: PageContent = { first: null, last: null };
 
   get borrowedCustomers() {
     return this.book?.customerSimpleResponses ?? [];
+  }
+
+  get filteredBorrowedCustomers() {
+    const search = this.searchedBorrowedCustomerName.toLowerCase();
+
+    if (!search) return this.borrowedCustomers;
+
+    return this.borrowedCustomers.filter((customer) =>
+      customer.name.toLowerCase().includes(search)
+    );
+  }
+
+  get paginatedBorrowedCustomers() {
+    const start = this.borrowedCustomersPage * this.borrowedCustomersPageSize;
+
+    return this.filteredBorrowedCustomers.slice(start, start + this.borrowedCustomersPageSize);
+  }
+
+  get borrowedCustomersPageContent(): PageContent {
+    return {
+      first: this.borrowedCustomersPage === 0,
+      last: this.borrowedCustomersPage >= this.lastBorrowedCustomersPage,
+    };
   }
 
   get availableCopies(): number {
@@ -57,6 +89,7 @@ export class BookDetail {
     this.bookService.findById(this.id).subscribe({
       next: (response) => {
         this.book = response;
+        this.normalizeBorrowedCustomersPage();
         this.loading = false;
       },
       error: () => {
@@ -74,12 +107,20 @@ export class BookDetail {
     }
   }
 
-  findCustomers() {
-    this.isLoadingCustomers = true;
+  searchCustomers() {
+    this.searchedCustomerName = this.customerName.trim();
+    this.customerPage = 0;
+    this.findCustomers();
+  }
 
-    this.customerService.findAllByName(this.customerName.trim(), 'ALL').subscribe({
+  findCustomers(value: number = 0) {
+    this.isLoadingCustomers = true;
+    this.customerPage += this.changePage(value, this.customerPageContent.first, this.customerPageContent.last);
+
+    this.customerService.findAllByName(this.searchedCustomerName, 'ALL', this.customerPage).subscribe({
       next: (response) => {
-        this.customers = response;
+        this.customerPageContent = { first: response.first, last: response.last };
+        this.customers = response.content;
         this.isLoadingCustomers = false;
       },
       error: () => {
@@ -129,5 +170,34 @@ export class BookDetail {
 
   formatDate(value: Date | string): string {
     return String(value).slice(0, 10);
+  }
+
+  searchBorrowedCustomers() {
+    this.searchedBorrowedCustomerName = this.borrowedCustomerName.trim();
+    this.borrowedCustomersPage = 0;
+  }
+
+  changeBorrowedCustomersPage(value: number) {
+    this.borrowedCustomersPage += this.changePage(
+      value,
+      this.borrowedCustomersPageContent.first,
+      this.borrowedCustomersPageContent.last
+    );
+  }
+
+  private normalizeBorrowedCustomersPage() {
+    this.borrowedCustomersPage = Math.min(this.borrowedCustomersPage, this.lastBorrowedCustomersPage);
+  }
+
+  private get lastBorrowedCustomersPage(): number {
+    return Math.max(Math.ceil(this.filteredBorrowedCustomers.length / this.borrowedCustomersPageSize) - 1, 0);
+  }
+
+  private changePage(value: number, first: boolean | null, last: boolean | null): number {
+    if (first === null || last === null) return 0;
+    if (first && value < 0) return 0;
+    if (last && value > 0) return 0;
+
+    return value;
   }
 }

@@ -8,6 +8,10 @@ import com.matheus.book.domain.book.entity.Book;
 import com.matheus.book.domain.publisher.entity.Publisher;
 import com.matheus.book.domain.publisher.repository.PublisherRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,35 +34,43 @@ public class PublisherService {
         return toResponse(publisher);
     }
 
-    public List<PublisherResponse> findAllByName(String name, PublisherFilter filter){
+    public Page<PublisherResponse> findAllByName(String name, PublisherFilter filter,
+                                                 int page, int size){
+        Page<Publisher> publishers;
 
-        List<Publisher> publishers;
+        Pageable pageable = PageRequest.of(
+                page,
+                size,
+                Sort.by(
+                        Sort.Order.asc("name").ignoreCase()
+                )
+        );
 
         switch (filter){
-            case ALL -> publishers = publisherRepository.findAllByName(name);
+            case ALL -> publishers = publisherRepository.findAllByName(name, pageable);
+
             case WITH_BORROWED_BOOKS ->
-                    publishers = publisherRepository.findWithBorrowedBooksByName(name);
+                    publishers = publisherRepository
+                            .findWithBorrowedBooksByName(name, pageable);
 
             case WITHOUT_BORROWED_BOOKS ->
-                    publishers = publisherRepository.findWithoutBorrowedBooksByName(name);
+                    publishers = publisherRepository
+                            .findWithoutBorrowedBooksByName(name, pageable);
 
-            default -> publishers = publisherRepository.findAll();
+            default -> publishers = publisherRepository.findAll(pageable);
         }
 
-        return publishers.stream()
-                .sorted(Comparator.comparing(
-                            Publisher::getName,
-                            String.CASE_INSENSITIVE_ORDER
-                        )
-                )
-                .map(this::toResponse)
-                .toList();
+        return publishers.map(this::toResponse);
     }
 
     public PublisherResponse findById(Long id){
         Publisher publisher = findPublisherById(id);
 
         return toResponse(publisher);
+    }
+
+    public int info(){
+        return publisherRepository.findAll().size();
     }
 
     @Transactional

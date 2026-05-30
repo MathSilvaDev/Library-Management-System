@@ -61,10 +61,9 @@
               type="text"
               placeholder="Search publishers..."
               [(ngModel)]="publisherName"
-              (keyup.enter)="findPublishers()"
             />
 
-            <button class="btn secondary" type="button" (click)="findPublishers()">Search</button>
+            <button class="btn secondary" type="button" (click)="searchPublishers()">Search</button>
           </div>
 
           @if (selectedPublisher) {
@@ -86,6 +85,24 @@
               <p class="empty">{{ selectedPublisher ? 'No other publishers found.' : 'No publishers found.' }}</p>
             }
           </div>
+
+          <nav class="pagination-preview" aria-label="Publisher pagination">
+            <button
+              class="pagination-arrow previous"
+              type="button"
+              aria-label="Previous publisher page"
+              [disabled]="publisherPageContent.first"
+              (click)="findPublishers(-1)"
+            ></button>
+
+            <button
+              class="pagination-arrow next"
+              type="button"
+              aria-label="Next publisher page"
+              [disabled]="publisherPageContent.last"
+              (click)="findPublishers(1)"
+            ></button>
+          </nav>
         </div>
 
         @if (error) {

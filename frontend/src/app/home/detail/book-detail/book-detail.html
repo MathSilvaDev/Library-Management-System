@@ -81,10 +81,9 @@
                     name="customerName"
                     placeholder="Search customers..."
                     [(ngModel)]="customerName"
-                    (keyup.enter)="findCustomers()"
                   />
 
-                  <button class="btn secondary" type="button" (click)="findCustomers()">Search</button>
+                  <button class="btn secondary" type="button" (click)="searchCustomers()">Search</button>
                 </div>
 
                 <div class="list">
@@ -112,6 +111,24 @@
                     }
                   }
                 </div>
+
+                <nav class="pagination-preview" aria-label="Customer pagination">
+                  <button
+                    class="pagination-arrow previous"
+                    type="button"
+                    aria-label="Previous customer page"
+                    [disabled]="customerPageContent.first"
+                    (click)="findCustomers(-1)"
+                  ></button>
+
+                  <button
+                    class="pagination-arrow next"
+                    type="button"
+                    aria-label="Next customer page"
+                    [disabled]="customerPageContent.last"
+                    (click)="findCustomers(1)"
+                  ></button>
+                </nav>
               </div>
             }
           </section>
@@ -124,8 +141,20 @@
               </div>
             </div>
 
+            <div class="picker-actions">
+              <input
+                class="picker-search"
+                type="text"
+                name="borrowedCustomerName"
+                placeholder="Search borrowed customers..."
+                [(ngModel)]="borrowedCustomerName"
+              />
+
+              <button class="btn secondary" type="button" (click)="searchBorrowedCustomers()">Search</button>
+            </div>
+
             <div class="list scroll-list">
-              @for (customer of borrowedCustomers; track $index) {
+              @for (customer of paginatedBorrowedCustomers; track $index) {
                 <div class="list-row">
                   <div>
                     <strong>{{ customer.name }}</strong>
@@ -145,6 +174,24 @@
                 <p class="empty">No customer has borrowed this book.</p>
               }
             </div>
+
+            <nav class="pagination-preview" aria-label="Borrowed customer pagination">
+              <button
+                class="pagination-arrow previous"
+                type="button"
+                aria-label="Previous borrowed customer page"
+                [disabled]="borrowedCustomersPageContent.first"
+                (click)="changeBorrowedCustomersPage(-1)"
+              ></button>
+
+              <button
+                class="pagination-arrow next"
+                type="button"
+                aria-label="Next borrowed customer page"
+                [disabled]="borrowedCustomersPageContent.last"
+                (click)="changeBorrowedCustomersPage(1)"
+              ></button>
+            </nav>
           </section>
         </div>
       </section>

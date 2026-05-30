@@ -7,6 +7,8 @@ import { BookService } from '../../api/book/service/book.service';
 import { CustomerResponse } from '../../api/customer/dto/response/customer-response';
 import { CustomerService } from '../../api/customer/service/customer.service';
 
+type PageContent = { first: boolean | null; last: boolean | null };
+
 @Component({
   selector: 'app-customer-detail',
   imports: [CommonModule, FormsModule, RouterLink],
@@ -18,15 +20,46 @@ export class CustomerDetail {
   customer: CustomerResponse | null = null;
   books: BookResponse[] = [];
   bookName = '';
+  borrowedBookName = '';
+  searchedBookName = '';
+  searchedBorrowedBookName = '';
   showBorrowBooks = false;
   loading = true;
   isLoadingBooks = false;
   actionBookId: number | null = null;
   message = '';
   error = '';
+  page: number = 0;
+  borrowedBooksPage: number = 0;
+  readonly borrowedBooksPageSize: number = 20;
+  bookPageContent: PageContent = { first: null, last: null };
 
   get borrowedBooks() {
     return this.customer?.bookSimpleResponses ?? [];
+  }
+
+  get filteredBorrowedBooks() {
+    const search = this.searchedBorrowedBookName.toLowerCase();
+
+    if (!search) return this.borrowedBooks;
+
+    return this.borrowedBooks.filter((book) =>
+      book.name.toLowerCase().includes(search) ||
+      book.publisherName.toLowerCase().includes(search)
+    );
+  }
+
+  get paginatedBorrowedBooks() {
+    const start = this.borrowedBooksPage * this.borrowedBooksPageSize;
+
+    return this.filteredBorrowedBooks.slice(start, start + this.borrowedBooksPageSize);
+  }
+
+  get borrowedBooksPageContent(): PageContent {
+    return {
+      first: this.borrowedBooksPage === 0,
+      last: this.borrowedBooksPage >= this.lastBorrowedBooksPage,
+    };
   }
 
   constructor(
@@ -47,6 +80,7 @@ export class CustomerDetail {
     this.customerService.findById(this.id).subscribe({
       next: (response) => {
         this.customer = response;
+        this.normalizeBorrowedBooksPage();
         this.loading = false;
       },
       error: () => {
@@ -64,12 +98,20 @@ export class CustomerDetail {
     }
   }
 
-  findBooks() {
-    this.isLoadingBooks = true;
+  searchBooks() {
+    this.searchedBookName = this.bookName.trim();
+    this.page = 0;
+    this.findBooks();
+  }
 
-    this.bookService.findAllByName(this.bookName.trim(), 'ALL').subscribe({
+  findBooks(value: number = 0) {
+    this.isLoadingBooks = true;
+    this.page += this.changePage(value, this.bookPageContent.first, this.bookPageContent.last);
+
+    this.bookService.findAllByName(this.searchedBookName, 'ALL', this.page).subscribe({
       next: (response) => {
-        this.books = response;
+        this.bookPageContent = { first: response.first, last: response.last };
+        this.books = response.content;
         this.isLoadingBooks = false;
       },
       error: () => {
@@ -125,5 +167,34 @@ export class CustomerDetail {
         this.actionBookId = null;
       },
     });
+  }
+
+  searchBorrowedBooks() {
+    this.searchedBorrowedBookName = this.borrowedBookName.trim();
+    this.borrowedBooksPage = 0;
+  }
+
+  changeBorrowedBooksPage(value: number) {
+    this.borrowedBooksPage += this.changePage(
+      value,
+      this.borrowedBooksPageContent.first,
+      this.borrowedBooksPageContent.last
+    );
+  }
+
+  private normalizeBorrowedBooksPage() {
+    this.borrowedBooksPage = Math.min(this.borrowedBooksPage, this.lastBorrowedBooksPage);
+  }
+
+  private get lastBorrowedBooksPage(): number {
+    return Math.max(Math.ceil(this.filteredBorrowedBooks.length / this.borrowedBooksPageSize) - 1, 0);
+  }
+
+  private changePage(value: number, first: boolean | null, last: boolean | null): number {
+    if (first === null || last === null) return 0;
+    if (first && value < 0) return 0;
+    if (last && value > 0) return 0;
+
+    return value;
   }
 }

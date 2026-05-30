@@ -12,13 +12,14 @@ import com.matheus.book.domain.customer.repository.CustomerRepository;
 import com.matheus.book.domain.publisher.entity.Publisher;
 import com.matheus.book.domain.publisher.repository.PublisherRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
-
-import java.util.Comparator;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -43,32 +44,35 @@ public class BookService {
         return toResponse(book);
     }
 
-    public List<BookResponse> findAllByName(String name, BookFilter filter){
+    public Page<BookResponse> findAllByName(String name, BookFilter filter, int page, int size){
 
-        List<Book> books;
+        Page<Book> books;
+        Pageable pageable = PageRequest.of(
+                page,
+                size,
+                Sort.by(
+                        Sort.Order.asc("name").ignoreCase()
+                )
+        );
 
         switch (filter){
-            case ALL -> books = bookRepository.findAllByName(name);
-            case AVAILABLE -> books = bookRepository.findAvailableByName(name);
-            case UNAVAILABLE -> books = bookRepository.findUnavailableByName(name);
-            default -> books = bookRepository.findAll();
-
+            case ALL -> books = bookRepository.findAllByName(name, pageable);
+            case AVAILABLE -> books = bookRepository.findAvailableByName(name, pageable);
+            case UNAVAILABLE -> books = bookRepository.findUnavailableByName(name, pageable);
+            default -> books = bookRepository.findAll(pageable);
         }
 
-        return books.stream()
-                .sorted(Comparator.comparing(
-                                Book::getName,
-                                String.CASE_INSENSITIVE_ORDER
-                        )
-                )
-                .map(this::toResponse)
-                .toList();
+        return books.map(this::toResponse);
     }
 
     public BookResponse findById(Long id){
         Book book = findBookById(id);
 
         return toResponse(book);
+    }
+
+    public int info(){
+        return bookRepository.findAll().size();
     }
 
     @Transactional

@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { PublisherRequest } from '../dto/publisher-request';
 import { Observable } from 'rxjs';
 import { PublisherResponse } from '../dto/publisher-response';
+import { PageResponse } from '../../page/page-response';
 
 @Injectable({
   providedIn: 'root',
@@ -17,14 +18,18 @@ export class PublisherService {
     return this.http.post<PublisherResponse>(`${this.API_URL}`, {...request});
   }
 
-  findAllByName(name: string, filter: string): Observable<PublisherResponse[]>{
-    return this.http.get<PublisherResponse[]>(`${this.API_URL}`, { 
-      params:{ name, filter }
+  findAllByName(name: string, filter: string, page: number): Observable<PageResponse<PublisherResponse>>{
+    return this.http.get<PageResponse<PublisherResponse>>(`${this.API_URL}`, { 
+      params:{ name, filter, page }
     });
   }
 
   findById(id: number): Observable<PublisherResponse>{
     return this.http.get<PublisherResponse>(`${this.API_URL}/${id}`)
+  }
+
+  info(): Observable<number>{
+    return this.http.get<number>(`${this.API_URL}/info`);
   }
 
   editInfo(id: number, name: string): Observable<void>{

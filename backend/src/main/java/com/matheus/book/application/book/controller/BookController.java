@@ -7,11 +7,10 @@ import com.matheus.book.application.book.enums.BookFilter;
 import com.matheus.book.application.book.service.BookService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/books")
@@ -29,12 +28,14 @@ public class BookController {
     }
 
     @GetMapping
-    public ResponseEntity<List<BookResponse>> findAllByName(
+    public ResponseEntity<Page<BookResponse>> findAllByName(
             @RequestParam(required = false) String name,
-            @RequestParam BookFilter filter){
+            @RequestParam BookFilter filter,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size){
 
         return ResponseEntity.ok(
-                bookService.findAllByName(name, filter));
+                bookService.findAllByName(name, filter, page, size));
     }
 
     @GetMapping("/{id}")
@@ -42,6 +43,12 @@ public class BookController {
 
         return ResponseEntity.ok(
                 bookService.findById(id));
+    }
+
+    @GetMapping("/info")
+    public ResponseEntity<Integer> info(){
+        return ResponseEntity.ok(
+                bookService.info());
     }
 
     @PatchMapping("/{id}")

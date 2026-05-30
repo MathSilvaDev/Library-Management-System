@@ -5,14 +5,12 @@ import com.matheus.book.application.customer.dto.request.EditCustomerRequest;
 import com.matheus.book.application.customer.dto.response.CustomerResponse;
 import com.matheus.book.application.customer.enums.CustomerFilter;
 import com.matheus.book.application.customer.service.CustomerService;
-import com.matheus.book.application.publisher.dto.request.EditPublisherRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/customers")
@@ -31,12 +29,14 @@ public class CustomerController {
     }
 
     @GetMapping
-    public ResponseEntity<List<CustomerResponse>> findAllByName(
+    public ResponseEntity<Page<CustomerResponse>> findAllByName(
             @RequestParam(required = false) String name,
-            @RequestParam CustomerFilter filter){
+            @RequestParam CustomerFilter filter,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size){
 
         return ResponseEntity.ok(
-                customerService.findAllByName(name, filter));
+                customerService.findAllByName(name, filter, page, size));
     }
 
     @GetMapping("/{id}")
@@ -44,6 +44,12 @@ public class CustomerController {
 
         return ResponseEntity.ok(
                 customerService.findById(id));
+    }
+
+    @GetMapping("/info")
+    public ResponseEntity<Integer> info(){
+        return ResponseEntity.ok(
+                customerService.info());
     }
 
     @PatchMapping("/{id}")

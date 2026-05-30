@@ -4,6 +4,7 @@ import { CreateBookRequest } from '../dto/request/create-book-request';
 import { BookResponse } from '../dto/response/book-response';
 import { Observable } from 'rxjs';
 import { EditBookRequest } from '../dto/request/edit-book-request';
+import { PageResponse } from '../../page/page-response';
 
 @Injectable({
   providedIn: 'root',
@@ -18,14 +19,18 @@ export class BookService {
     return this.http.post<BookResponse>(`${this.API_URL}/${publisherId}`, {...request});
   }
 
-  findAllByName(name: string, filter: string): Observable<BookResponse[]>{
-    return this.http.get<BookResponse[]>(`${this.API_URL}`, { 
-      params: { name, filter }
+  findAllByName(name: string, filter: string, page: number): Observable<PageResponse<BookResponse>>{
+    return this.http.get<PageResponse<BookResponse>>(`${this.API_URL}`, { 
+      params: { name, filter, page }
     });
   }
 
   findById(id: number): Observable<BookResponse>{
     return this.http.get<BookResponse>(`${this.API_URL}/${id}`)
+  }
+
+  info(): Observable<number>{
+    return this.http.get<number>(`${this.API_URL}/info`);
   }
 
   editInfo(id: number, request: EditBookRequest): Observable<void>{

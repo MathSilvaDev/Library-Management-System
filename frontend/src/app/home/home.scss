@@ -383,6 +383,7 @@ button {
 .card {
   padding: 18px;
   margin-bottom: 12px;
+  margin-top: 3px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -402,6 +403,18 @@ button {
   border-color: #b8c3d4;
   box-shadow: 0 12px 28px rgba(15, 23, 42, 0.08);
   transform: translateY(-2px);
+}
+
+.clickable-card:hover,
+.clickable-card:focus-visible {
+  border-color: var(--primary);
+  box-shadow:
+    0 0 0 3px rgba(37, 99, 235, 0.12),
+    0 12px 28px rgba(15, 23, 42, 0.08);
+}
+
+.clickable-card:focus-visible {
+  outline: none;
 }
 
 .left {

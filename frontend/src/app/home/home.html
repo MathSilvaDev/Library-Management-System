@@ -45,7 +45,6 @@
           placeholder="Search books..."
           aria-label="Search books"
           [(ngModel)]="bookName"
-          (keyup.enter)="searchSelectedMenu()"
         />
 
         <button class="search-btn" type="button" aria-label="Search books" (click)="searchSelectedMenu()">
@@ -60,7 +59,6 @@
           placeholder="Search customers..."
           aria-label="Search customers"
           [(ngModel)]="customerName"
-          (keyup.enter)="searchSelectedMenu()"
         />
 
         <button
@@ -80,7 +78,6 @@
           placeholder="Search publishers..."
           aria-label="Search publishers"
           [(ngModel)]="publisherName"
-          (keyup.enter)="searchSelectedMenu()"
         />
 
         <button
@@ -106,15 +103,15 @@
       <div>
         @if (selectedMenu === 'BOOKS') {
           <span class="publisher">Books</span>
-          <h1>{{ books.length }}</h1>
+          <h1>{{ totalBooks }}</h1>
           <p>Registered books</p>
         } @else if (selectedMenu === 'CUSTOMER') {
           <span class="publisher">Customers</span>
-          <h1>{{ customers.length }}</h1>
+          <h1>{{ totalCustomers }}</h1>
           <p>Registered customers</p>
         } @else {
           <span class="publisher">Publishers</span>
-          <h1>{{ publishers.length }}</h1>
+          <h1>{{ totalPublishers }}</h1>
           <p>Registered publishers</p>
         }
       </div>
@@ -193,7 +190,7 @@
     <section class="books">
       @if (selectedMenu === 'BOOKS') {
         @for (item of books; track item.id) {
-          <div class="card" role="button" tabindex="0" (click)="openBook(item.id)" (keydown.enter)="openBook(item.id)">
+          <div class="card clickable-card" role="button" tabindex="0" (click)="openBook(item.id)" (keydown.enter)="openBook(item.id)">
             <div class="left">
               <div class="cover" aria-hidden="true">&#128214;</div>
 
@@ -219,7 +216,7 @@
         }
       } @else if (selectedMenu === 'CUSTOMER') {
         @for (item of customers; track item.id) {
-          <div class="card" role="button" tabindex="0" (click)="openCustomer(item.id)" (keydown.enter)="openCustomer(item.id)">
+          <div class="card clickable-card" role="button" tabindex="0" (click)="openCustomer(item.id)" (keydown.enter)="openCustomer(item.id)">
             <div class="left">
               <div class="cover" aria-hidden="true">&#128100;</div>
 
@@ -259,5 +256,23 @@
         }
       }
     </section>
+
+    <nav class="pagination-preview" aria-label="Pagination">
+      <button
+        class="pagination-arrow previous"
+        type="button"
+        aria-label="Previous page"
+        [disabled]="selectedPageContent().first"
+        (click)="changeSelectedPage(-1)"
+      ></button>
+
+      <button
+        class="pagination-arrow next"
+        type="button"
+        aria-label="Next page"
+        [disabled]="selectedPageContent().last"
+        (click)="changeSelectedPage(1)"
+      ></button>
+    </nav>
   </main>
 </div>

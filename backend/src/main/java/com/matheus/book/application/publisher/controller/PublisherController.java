@@ -7,6 +7,7 @@ import com.matheus.book.application.publisher.enums.PublisherFilter;
 import com.matheus.book.application.publisher.service.PublisherService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -30,12 +31,14 @@ public class PublisherController {
     }
 
     @GetMapping
-    public ResponseEntity<List<PublisherResponse>> findAllByName(
+    public ResponseEntity<Page<PublisherResponse>> findAllByName(
             @RequestParam(required = false) String name,
-            @RequestParam PublisherFilter filter){
+            @RequestParam PublisherFilter filter,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size){
 
         return ResponseEntity.ok(
-                publisherService.findAllByName(name, filter));
+                publisherService.findAllByName(name, filter, page, size));
     }
 
     @GetMapping("/{id}")
@@ -43,6 +46,12 @@ public class PublisherController {
 
         return ResponseEntity.ok(
                 publisherService.findById(id));
+    }
+
+    @GetMapping("/info")
+    public ResponseEntity<Integer> info(){
+        return ResponseEntity.ok(
+                publisherService.info());
     }
 
     @PatchMapping("/{id}")

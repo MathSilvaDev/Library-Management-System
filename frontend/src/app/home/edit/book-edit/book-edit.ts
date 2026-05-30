@@ -6,6 +6,8 @@ import { PublisherService } from '../../api/publisher/service/publisher.service'
 import { PublisherResponse } from '../../api/publisher/dto/publisher-response';
 import { FormsModule } from '@angular/forms';
 
+type PageContent = { first: boolean | null; last: boolean | null };
+
 @Component({
   selector: 'app-book-edit',
   imports: [ FormsModule ],
@@ -22,8 +24,11 @@ export class BookEdit {
   publisherId!: number
 
   publisherName: string = '';
+  searchedPublisherName: string = '';
   publishers: PublisherResponse[] = [];
   selectedPublisher: PublisherResponse | null = null;
+  publisherPage: number = 0;
+  publisherPageContent: PageContent = { first: null, last: null };
 
   get selectablePublishers(): PublisherResponse[] {
     if (!this.selectedPublisher) {
@@ -88,12 +93,21 @@ export class BookEdit {
   }
 
   //publisher
-  findAllPublishersByName(){
-    const publisherName = this.publisherName.trim();
+  searchPublishers(){
+    this.searchedPublisherName = this.publisherName.trim();
+    this.publisherPage = 0;
+    this.findAllPublishersByName();
+  }
 
-    this.publisherService.findAllByName(publisherName, 'ALL').subscribe({
+  findAllPublishersByName(value: number = 0){
+    const publisherName = this.searchedPublisherName;
+
+    this.publisherPage += this.changePage(value, this.publisherPageContent.first, this.publisherPageContent.last);
+
+    this.publisherService.findAllByName(publisherName, 'ALL', this.publisherPage).subscribe({
       next: (response) => {
-        this.publishers = response;
+        this.publisherPageContent = { first: response.first, last: response.last };
+        this.publishers = response.content;
         this.showSelectedPublisherFirst();
       },
       error: () => {
@@ -131,6 +145,14 @@ export class BookEdit {
     const day = String(value.getDate()).padStart(2, '0');
 
     return `${year}-${month}-${day}`;
+  }
+
+  private changePage(value: number, first: boolean | null, last: boolean | null): number {
+    if (first === null || last === null) return 0;
+    if (first && value < 0) return 0;
+    if (last && value > 0) return 0;
+
+    return value;
   }
 
   private showSelectedPublisherFirst() {
