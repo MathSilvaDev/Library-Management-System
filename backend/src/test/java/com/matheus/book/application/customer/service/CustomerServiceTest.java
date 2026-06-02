@@ -13,6 +13,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
@@ -63,31 +66,40 @@ class CustomerServiceTest {
         void shouldFindAllIfNameIsNull(){
             Customer customer = new Customer(name);
 
-            when(customerRepository.findAllByName(null))
-                    .thenReturn(List.of(customer));
+            Page<Customer> page = new PageImpl<>(List.of(customer));
 
-            List<CustomerResponse> response =
-                    customerService.findAllByName(null, CustomerFilter.ALL);
+            when(customerRepository.findAllByName(
+                    isNull(),
+                    any(Pageable.class)))
+                    .thenReturn(page);
 
-            assertEquals(1, response.size());
+            Page<CustomerResponse> response =
+                    customerService.findAllByName(null, CustomerFilter.ALL, 0, 20);
 
-            verify(customerRepository).findAllByName(null);
+            assertEquals(1, response.getContent().size());
+
+            verify(customerRepository).findAllByName(
+                    isNull(),
+                    any(Pageable.class)
+            );
         }
 
         @Test
         void shouldFilterByNameIfNameExists(){
             Customer customer = new Customer(name);
+            Page<Customer> page = new PageImpl<>(List.of(customer));
 
-            when(customerRepository.findAllByName(name))
-                    .thenReturn(List.of(customer));
+            when(customerRepository.findAllByName(eq(name), any(Pageable.class)))
+                    .thenReturn(page);
 
-            List<CustomerResponse> response =
-                    customerService.findAllByName(name, CustomerFilter.ALL);
+            Page<CustomerResponse> response =
+                    customerService.findAllByName(name, CustomerFilter.ALL, 0, 20);
 
-            assertEquals(1, response.size());
+            assertEquals(1, response.getContent().size());
 
-            verify(customerRepository).findAllByName(name);
-
+            verify(customerRepository).findAllByName(
+                    eq(name),
+                    any(Pageable.class));
         }
     }
 

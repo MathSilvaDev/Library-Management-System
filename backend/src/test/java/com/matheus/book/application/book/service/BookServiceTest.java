@@ -15,6 +15,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
@@ -96,32 +99,34 @@ class BookServiceTest {
         void shouldFindAllIfNameIsNull(){
             Publisher publisher = new Publisher("publisher");
             Book book = new Book("book", publisher, null, 1);
+            Page<Book> page = new PageImpl<>(List.of(book));
 
-            when(bookRepository.findAllByName(null))
-                    .thenReturn(List.of(book));
+            when(bookRepository.findAllByName(isNull(), any(Pageable.class)))
+                    .thenReturn(page);
 
-            List<BookResponse> response =
-                    bookService.findAllByName(null, BookFilter.ALL);
+            Page<BookResponse> response =
+                    bookService.findAllByName(null, BookFilter.ALL, 0 ,10);
 
-            assertEquals(1, response.size());
+            assertEquals(1, response.getContent().size());
 
-            verify(bookRepository).findAllByName(null);
+            verify(bookRepository).findAllByName(isNull(), any(Pageable.class));
         }
 
         @Test
         void shouldFilterByNameIfNameExists(){
             Publisher publisher = new Publisher("publisher");
             Book book = new Book("book", publisher, null, 1);
+            Page<Book> page = new PageImpl<>(List.of(book));
 
-            when(bookRepository.findAllByName("book"))
-                    .thenReturn(List.of(book));
+            when(bookRepository.findAllByName(eq("book"), any(Pageable.class)))
+                    .thenReturn(page);
 
-            List<BookResponse> response =
-                    bookService.findAllByName("book", BookFilter.ALL);
+            Page<BookResponse> response =
+                    bookService.findAllByName("book", BookFilter.ALL, 0 ,20);
 
-            assertEquals(1, response.size());
+            assertEquals(1, response.getContent().size());
 
-            verify(bookRepository).findAllByName("book");
+            verify(bookRepository).findAllByName(eq("book"), any(Pageable.class));
 
         }
     }

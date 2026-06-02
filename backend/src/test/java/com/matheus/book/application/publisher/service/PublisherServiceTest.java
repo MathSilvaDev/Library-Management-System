@@ -12,6 +12,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
@@ -60,31 +63,33 @@ class PublisherServiceTest {
         @Test
         void shouldFindAllIfNameIsNull(){
             Publisher publisher = new Publisher(name);
+            Page<Publisher> page = new PageImpl<>(List.of(publisher));
 
-            when(publisherRepository.findAllByName(null))
-                    .thenReturn(List.of(publisher));
+            when(publisherRepository.findAllByName(isNull(), any(Pageable.class)))
+                    .thenReturn(page);
 
-            List<PublisherResponse> response =
-                    publisherService.findAllByName(null, PublisherFilter.ALL);
+            Page<PublisherResponse> response =
+                    publisherService.findAllByName(null, PublisherFilter.ALL, 0 ,20);
 
-            assertEquals(1, response.size());
+            assertEquals(1, response.getContent().size());
 
-            verify(publisherRepository).findAllByName(null);
+            verify(publisherRepository).findAllByName(isNull(), any(Pageable.class));
         }
 
         @Test
         void shouldFilterByNameIfNameExists(){
             Publisher publisher = new Publisher(name);
+            Page<Publisher> page = new PageImpl<>(List.of(publisher));
 
-            when(publisherRepository.findAllByName(name))
-                    .thenReturn(List.of(publisher));
+            when(publisherRepository.findAllByName(eq(name), any(Pageable.class)))
+                    .thenReturn(page);
 
-            List<PublisherResponse> response =
-                    publisherService.findAllByName(name, PublisherFilter.ALL);
+            Page<PublisherResponse> response =
+                    publisherService.findAllByName(name, PublisherFilter.ALL, 0 , 20);
 
-            assertEquals(1, response.size());
+            assertEquals(1, response.getContent().size());
 
-            verify(publisherRepository).findAllByName(name);
+            verify(publisherRepository).findAllByName(eq(name), any(Pageable.class));
 
         }
     }
