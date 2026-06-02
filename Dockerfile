@@ -17,7 +17,7 @@ COPY backend/pom.xml ./
 RUN mvn -B -DskipTests dependency:go-offline
 
 COPY backend/src ./src
-COPY --from=frontend-build /workspace/backend/src/main/resources/static ./src/main/resources/static
+COPY --from=frontend-build /workspace/frontend/dist/frontend/browser ./src/main/resources/static
 RUN mvn -B -DskipTests package
 
 FROM eclipse-temurin:21-jre
